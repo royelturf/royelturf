@@ -3,7 +3,6 @@
     padding: rem(5px) 0;
     @include mq(large) {
         position: relative;
-        padding: 0 0 rem(5px);
     }
 
 
@@ -14,10 +13,10 @@
     }
 
     &__logo-wrap {
-        max-width: rem(60px);
+        max-width: rem(50px);
         width: 100%;
         @include mq(large) {
-            max-width: rem(90px);
+            max-width: rem(70px);
         }
     }
 
@@ -67,7 +66,7 @@
         }
 
         &:hover {
-            color: #a9ff58;
+            color: #ee9c39;
             cursor: pointer;
         }
     }
@@ -85,7 +84,7 @@
         }
 
         &:hover {
-            color: #a9ff58;
+            color: #ee9c39;
             cursor: pointer;
         }
     }
