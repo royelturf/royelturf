@@ -41,9 +41,9 @@ const refundAndCancellation = () => {
                       Contact for Cancellation <br />
                       To cancel or reschedule, customers must immediately send their Booking Name, Slot Date/Time, and bKash TrxID to:
                       <ul>
-                        <li>Hotline / WhatsApp: <a href="tel: 01620278838">01620-278838</a></li>
-                        <li>Email: <a href="mailto: mymensinghturf@gmail.com">mymensinghturf@gmail.com</a></li>
-                        <li>Address: Digarkanda (Shantinogor), Chotropur, Amolitola, Mymensingh Sadar</li>
+                        <li>Hotline / WhatsApp: <a href="tel: 01616753671">8801616753671</a></li>
+                        <li>Email: <a href="mailto: royelturf@gmail.com">royelturf@gmail.com</a></li>
+                        <li>Address: Chairman Bari, Goshai Pushkuruni, Lalmai, Cumilla</li>
                       </ul>
                     </li>
                   </ol>
