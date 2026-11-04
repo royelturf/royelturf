@@ -20,10 +20,10 @@ const Turfs = () => {
                                         className='our-turfs__turf-image'
                                         width={600}
                                     />
-                                    <span className='our-turfs__image-title'>Royel Turf & Swimming Zone</span>
+                                    <span className='our-turfs__image-title'>Buschi Royel Turf & Swimming Zone</span>
                                 </div>
-                                <h3 className='our-turfs__turf-name'>Royel Turf & Swimming Zone</h3>
-                                <p className='our-turfs__turf-text'>The Home of Football in Buchi</p>
+                                <h3 className='our-turfs__turf-name'>Buschi Royel Turf & Swimming Zone</h3>
+                                <p className='our-turfs__turf-text'>The Home of Football in Buschi</p>
                             </div>
                         </Link>
 

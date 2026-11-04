@@ -18,8 +18,8 @@ const Map = () => {
                                 referrerPolicy="no-referrer-when-downgrade"
                                 className='map__map'
                             ></iframe>
-                            <h3 className='our-turfs__turf-name'>Royel Turf & Swimming Zone</h3>
-                            <p className='our-turfs__turf-text'>The Home of Football in Buchi</p>
+                            <h3 className='our-turfs__turf-name'>Buschi Royel Turf & Swimming Zone</h3>
+                            <p className='our-turfs__turf-text'>The Home of Football in Buschi</p>
                         </div>
 
                     </div>
