@@ -255,9 +255,9 @@ export default function FooterSection() {
           </div>
 
           <nav className="s-foot-legal-links" aria-label="নীতিমালা লিংক">
-            <Link href="/privacy-policy">গোপনীয়তা নীতি</Link>
-            <Link href="/terms-and-conditions">ব্যবহারের শর্তাবলী</Link>
-            <Link href="/refund-and-cancellation">রিফান্ড পলিসি</Link>
+            <Link href="/#">গোপনীয়তা নীতি</Link>
+            <Link href="/#">ব্যবহারের শর্তাবলী</Link>
+            <Link href="/#">রিফান্ড পলিসি</Link>
           </nav>
         </div>
       </div>
