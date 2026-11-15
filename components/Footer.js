@@ -1,9 +1,15 @@
+"use client";
+
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import mainLogo from '@/public/images/main-logo.png'
 
 const Footer = () => {
+    const pathname = usePathname();
+    const isAuthOrHome = pathname === '/' || pathname === '/signin' || pathname === '/login' || pathname === '/signup';
+    if (isAuthOrHome) return null;
     return (
         <>
             <footer className="footer">
@@ -27,47 +33,47 @@ const Footer = () => {
                             </div>
                         </div>
                         <div className='footer__column'>
-                            <h3 className='footer__column-heading'>SUPPORT AND RESOURCES</h3>
+                            <h3 className='footer__column-heading'>সহায়তা ও রিসোর্স</h3>
                             <nav className='footer__column-nav-wrap'>
                                 <Link href='/contactus'>
-                                    <span className='footer__column-nav-item'>Contact Us</span>
+                                    <span className='footer__column-nav-item'>যোগাযোগ</span>
                                 </Link>
                                 <Link href='/refund-and-cancellation'>
-                                    <span className='footer__column-nav-item'>Refund And Cancellation</span>
+                                    <span className='footer__column-nav-item'>রিফান্ড পলিসি</span>
                                 </Link>
                                 <Link href='/facilities'>
-                                    <span className='footer__column-nav-item'>Facilities</span>
+                                    <span className='footer__column-nav-item'>সুবিধাসমূহ</span>
                                 </Link>
                                 <Link href='/gallery'>
-                                    <span className='footer__column-nav-item'>Photo Gallery</span>
+                                    <span className='footer__column-nav-item'>ফটো গ্যালারি</span>
                                 </Link>
-                                <Link href='/booking'>
-                                    <span className='footer__column-nav-item'>Book Now</span>
+                                <Link href='/#booking'>
+                                    <span className='footer__column-nav-item'>বুক করুন</span>
                                 </Link>
                             </nav>
                         </div>
                         <div className='footer__column'>
-                            <h3 className='footer__column-heading'>INFORMATION</h3>
+                            <h3 className='footer__column-heading'>তথ্য</h3>
                             <nav className='footer__column-nav-wrap'>
                                 <Link href='/aboutus' className='footer__column-nav-item-link'>
-                                    <span className='footer__column-nav-item'>About Us</span>
+                                    <span className='footer__column-nav-item'>আমাদের সম্পর্কে</span>
                                 </Link>
                                 <Link href='/dashboard' className='footer__column-nav-item-link'>
-                                    <span className='footer__column-nav-item'>My Account</span>
+                                    <span className='footer__column-nav-item'>আমার অ্যাকাউন্ট</span>
                                 </Link>
                                 <Link href='/privacy-policy' className='footer__column-nav-item-link'>
-                                    <span className='footer__column-nav-item'>Privacy Policy</span>
+                                    <span className='footer__column-nav-item'>গোপনীয়তা নীতি</span>
                                 </Link>
                                 <Link href='/terms-and-conditions' className='footer__column-nav-item-link'>
-                                    <span className='footer__column-nav-item'>Terms And Conditions</span>
+                                    <span className='footer__column-nav-item'>শর্তাবলী</span>
                                 </Link>
-                                <Link href='/booking'>
-                                    <span className='footer__column-nav-item'>Book Now</span>
+                                <Link href='/#booking'>
+                                    <span className='footer__column-nav-item'>বুক করুন</span>
                                 </Link>
                             </nav>
                         </div>
                         <div className='footer__column'>
-                            <h3 className='footer__column-heading'>LOCATION</h3>
+                            <h3 className='footer__column-heading'>ঠিকানা</h3>
                             <address className='footer__address-text'>Chairman Bari, Goshai Pushkuruni, Lalmai, Cumilla</address>
                             <div className='footer__contact-wrap'>
                                 <svg width="18" height="17" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">

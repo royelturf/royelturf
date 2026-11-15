@@ -7,8 +7,8 @@ const Aboutus = () => {
     <>
       <Turfs/>
       <div className='button-wrap'>
-        <Link href='/booking'>
-          <span className='secondary-button'>Book Now</span>
+        <Link href='/#booking'>
+          <span className='secondary-button'>বুক করুন</span>
         </Link>
       </div>
     </>

@@ -1,29 +1,29 @@
 const Menu = [
     {
         id: 1,
-        menuText: 'Home',
-        menuUrl:'/'
+        menuText: 'হোম',
+        menuUrl: '/'
     },
     {
         id: 2,
-        menuText: 'About Us',
-        menuUrl:'/aboutus'
+        menuText: 'আমাদের সম্পর্কে',
+        menuUrl: '/aboutus'
     },
     {
         id: 3,
-        menuText: 'Facilities',
-        menuUrl:'/facilities'
+        menuText: 'সুবিধাসমূহ',
+        menuUrl: '/facilities'
     },
     {
         id: 4,
-        menuText: 'Gallery',
-        menuUrl:'/gallery'
+        menuText: 'গ্যালারি',
+        menuUrl: '/gallery'
     },
     {
         id: 5,
-        menuText: 'Contact Us',
-        menuUrl:'/contactus'
+        menuText: 'যোগাযোগ',
+        menuUrl: '/contactus'
     },
 ]
 
-export default Menu
+export default Menu;

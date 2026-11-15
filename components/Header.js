@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import mainLogo from "@/public/images/main-logo.png";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -17,7 +18,9 @@ import HeaderNav from "./HeaderNav";
 gsap.registerPlugin(ScrollTrigger);
 
 const Header = () => {
+  const pathname = usePathname();
   const { data: session } = useSession();
+  const isAuthOrHome = pathname === '/' || pathname === '/signin' || pathname === '/login' || pathname === '/signup';
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -26,7 +29,9 @@ const Header = () => {
   const [menuData] = useState(Menu);
 
   useEffect(() => {
+    if (isAuthOrHome) return;
     const header = headerRef.current;
+    if (!header) return;
 
     if (window.innerWidth >= 1024) {
       ScrollTrigger.create({
@@ -50,7 +55,9 @@ const Header = () => {
         },
       });
     }
-  }, []);
+  }, [pathname]);
+
+  if (isAuthOrHome) return null;
 
   return (
     <header ref={headerRef} className="header">
@@ -77,12 +84,12 @@ const Header = () => {
               </Link>
             ) : (
               <Link href="/signin">
-                <span className="primary-button">Sign In</span>
+                <span className="primary-button">লগইন</span>
               </Link>
             )}
 
-            <Link href="/booking">
-              <span className="primary-button">Book Now</span>
+            <Link href="/#booking">
+              <span className="primary-button">বুক করুন</span>
             </Link>
           </nav>
 
@@ -124,19 +131,19 @@ const Header = () => {
 
               <nav className="header__nav-wrap header__nav-wrap--mobile">
                 <Link href="/" onClick={toggleMenu}>
-                  <span className="header__nav-item">Home</span>
+                  <span className="header__nav-item">হোম</span>
                 </Link>
                 <Link href="/aboutus" onClick={toggleMenu}>
-                  <span className="header__nav-item">About Us</span>
+                  <span className="header__nav-item">আমাদের সম্পর্কে</span>
                 </Link>
                 <Link href="/facilities" onClick={toggleMenu}>
-                  <span className="header__nav-item">Facilities</span>
+                  <span className="header__nav-item">সুবিধাসমূহ</span>
                 </Link>
                 <Link href="/gallery" onClick={toggleMenu}>
-                  <span className="header__nav-item">Gallery</span>
+                  <span className="header__nav-item">গ্যালারি</span>
                 </Link>
                 <Link href="/contactus" onClick={toggleMenu}>
-                  <span className="header__nav-item">Contact Us</span>
+                  <span className="header__nav-item">যোগাযোগ</span>
                 </Link>
 
                 {session?.user ? (
@@ -148,12 +155,12 @@ const Header = () => {
                 ) : (
                   <Link href="/signin" onClick={toggleMenu}>
                     <span className="primary-button header__nav-item-button--mobile">
-                      Sign In
+                      লগইন
                     </span>
                   </Link>
                 )}
-                <Link href="/booking" onClick={toggleMenu}>
-                  <span className="header__nav-item">Book Now</span>
+                <Link href="/#booking" onClick={toggleMenu}>
+                  <span className="header__nav-item">বুক করুন</span>
                 </Link>
               </nav>
             </div>
