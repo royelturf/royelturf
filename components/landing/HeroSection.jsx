@@ -22,7 +22,7 @@ export default function HeroSection() {
         <div className="s-scrim"></div>
       </div>
 
-      <div className="s-wrap s-hero-copy">
+      <div className="s-wrap s-hero-copy s-hero-hero">
         <p className="s-eyebrow">
           <svg
             xmlns="http://www.w3.org/2000/svg"

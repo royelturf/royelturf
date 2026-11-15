@@ -66,6 +66,18 @@
   margin-right: auto;
 }
 
+.s-hero-hero{
+  margin-left: max(16px, env(safe-area-inset-left, 0px));
+  margin-right: max(16px, env(safe-area-inset-left, 0px));
+}
+
+@media all and (min-width: 769px) {
+  .s-hero-hero{
+    margin-left: max(80px, env(safe-area-inset-left, 0px));
+    margin-right: max(80px, env(safe-area-inset-left, 0px));
+  }
+}
+
 .s-sr {
   clip: rect(0 0 0 0);
   white-space: nowrap;
