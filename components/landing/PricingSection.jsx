@@ -151,14 +151,14 @@ export default function PricingSection() {
           <p className="s-shift-desc">{shift.desc}</p>
 
           {/* Checklist */}
-          <ul className="s-shift-features">
+          {/* <ul className="s-shift-features">
             {shift.features.map((feat, idx) => (
               <li key={idx}>
                 <CheckCircle2 size={16} className="s-check-icon" />
                 <span>{feat}</span>
               </li>
             ))}
-          </ul>
+          </ul> */}
         </div>
 
         {/* CTA Button */}
