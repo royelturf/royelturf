@@ -67,14 +67,18 @@
 }
 
 .s-hero-hero{
-  margin-left: max(16px, env(safe-area-inset-left, 0px));
-  margin-right: max(16px, env(safe-area-inset-left, 0px));
+  
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-left, 0px));
+  margin-left: auto;
+  margin-right: auto;
 }
 
 @media all and (min-width: 769px) {
   .s-hero-hero{
-    margin-left: max(80px, env(safe-area-inset-left, 0px));
-    margin-right: max(80px, env(safe-area-inset-left, 0px));
+    max-width: 1200px;
+    width: 100%;
+    margin: auto;
   }
 }
 

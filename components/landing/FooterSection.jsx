@@ -13,6 +13,7 @@ import {
   Check,
   ChevronRight,
   ExternalLink,
+  whatsapp
 } from "lucide-react";
 import mainLogo from "@/public/images/main-logo.png";
 
