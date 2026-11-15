@@ -39,14 +39,14 @@ export default function FooterSection() {
               <div className="s-brand-logo-wrap">
                 <Image
                   src={mainLogo}
-                  alt="রয়েল টার্ফ লোগো"
+                  alt="ভূশ্চি রয়েল টার্ফ লোগো"
                   width={38}
                   height={38}
                   priority
                 />
               </div>
               <div className="s-brand-titles">
-                <strong>রয়েল টার্ফ</strong>
+                <strong>ভূশ্চি রয়েল টার্ফ</strong>
                 <span>এন্ড সুইমিং জোন</span>
               </div>
             </Link>
@@ -180,7 +180,7 @@ export default function FooterSection() {
                 <div className="s-cb-info">
                   <span>টার্ফ লোকেশন</span>
                   <address>
-                    চেয়ারম্যান বাড়ি, গোসাই পুষ্করিণী, লালমাই, কুমিল্লা
+                    ছোট গোষাই পুস্কুরনী, ভূশ্চি-কাশিনাগর রোড, লালমাই।
                   </address>
                   <a
                     href="https://maps.google.com/?q=23.3024058,91.1892033"
@@ -251,7 +251,7 @@ export default function FooterSection() {
         {/* Bottom Copyright and Legal Bar */}
         <div className="s-foot-bottom">
           <div className="s-foot-copy">
-            <span>© ২০২৬ রয়েল টার্ফ এন্ড সুইমিং জোন। সর্বস্বত্ব সংরক্ষিত।</span>
+            <span>© ২০২৬ ভূশ্চি রয়েল টার্ফ এন্ড সুইমিং জোন। সর্বস্বত্ব সংরক্ষিত।</span>
           </div>
 
           <nav className="s-foot-legal-links" aria-label="নীতিমালা লিংক">

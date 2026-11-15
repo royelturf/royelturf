@@ -167,11 +167,12 @@
     gap: 24px;
     height: 100%;
     display: flex;
+    justify-content: space-between;
   }
 }
 
 .s-brand {
-  white-space: nowrap;
+  white-space: wrap;
   align-items: center;
   gap: 12px;
   min-height: 44px;
@@ -190,6 +191,12 @@
   span {
     color: var(--text);
     letter-spacing: -0.01em;
+  }
+}
+
+@media all and (max-width: 640px) {
+  .s-brand span {
+    display: none;
   }
 }
 
@@ -505,6 +512,7 @@
   flex-direction: column;
   gap: 18px;
   border-top: 1px solid var(--line);
+  min-height: 100vh;
 
   a {
     font-size: 18px;
@@ -583,9 +591,9 @@
 .s-hero-h {
   letter-spacing: -0.01em;
   margin: 18px 0 20px;
-  font-size: max(38px, min(5.4vw, 76px));
+  font-size: 65px;
   font-weight: 800;
-  line-height: 1.15;
+  line-height: 1.2;
   color: var(--text);
 
   span {
@@ -732,6 +740,13 @@
 .s-book {
   padding-top: 88px;
   padding-bottom: 88px;
+}
+
+@media all and (max-width: 768px) {
+  .s-book {
+    padding-top: 24px;
+    padding-bottom: 44px;
+  }
 }
 
 .s-dates-bar {
@@ -1822,8 +1837,8 @@
     text-decoration: none;
 
     .s-brand-logo-wrap {
-      width: 52px;
-      height: 52px;
+      width: 60px;
+      height: 60px;
       border-radius: 16px;
       background: linear-gradient(135deg, rgba(0, 150, 199, 0.2) 0%, rgba(14, 23, 46, 0.9) 100%);
       border: 1px solid rgba(0, 150, 199, 0.45);
@@ -1850,7 +1865,7 @@
 
       span {
         display: block;
-        font-size: 12px;
+        font-size: 18px;
         font-weight: 700;
         color: var(--gold);
         letter-spacing: 0.05em;

@@ -41,13 +41,13 @@ export default function LandingHeader() {
           <Link href="/" className="s-brand" onClick={closeMobile}>
             <Image
               src={mainLogo}
-              alt="রয়েল টার্ফ লোগো"
+              alt="ভূশ্চি রয়েল টার্ফ লোগো"
               className="s-logo-img"
               width={38}
               height={38}
               priority
             />
-            <span>রয়েল টার্ফ</span>
+            <span>ভূশ্চি রয়েল টার্ফ</span>
           </Link>
 
           <nav className="s-links" aria-label="পেজের অংশ">
