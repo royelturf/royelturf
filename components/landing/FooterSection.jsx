@@ -121,33 +121,21 @@ export default function FooterSection() {
             <h4>দ্রুত লিংক</h4>
             <ul className="s-foot-links-list">
               <li>
-                <a href="#booking">
+                <Link href="/#booking">
                   <ChevronRight size={15} />
                   <span>স্লট বুকিং</span>
-                </a>
-              </li>
-              <li>
-                <a href="#prices">
-                  <ChevronRight size={15} />
-                  <span>প্যাকেজ ও রেট</span>
-                </a>
-              </li>
-              <li>
-                <a href="#amenities">
-                  <ChevronRight size={15} />
-                  <span>টার্ফ সুবিধাসমূহ</span>
-                </a>
-              </li>
-              <li>
-                <Link href="/aboutus">
-                  <ChevronRight size={15} />
-                  <span>আমাদের সম্পর্কে</span>
                 </Link>
               </li>
               <li>
-                <Link href="/gallery">
+                <Link href="/#prices">
                   <ChevronRight size={15} />
-                  <span>ফটো গ্যালারি</span>
+                  <span>প্যাকেজ ও রেট</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/#amenities">
+                  <ChevronRight size={15} />
+                  <span>টার্ফ সুবিধাসমূহ</span>
                 </Link>
               </li>
               <li>
@@ -167,7 +155,7 @@ export default function FooterSection() {
                 <Clock className="s-hour-icon" size={18} />
                 <div className="s-hour-text">
                   <span>প্রতিদিন খোলা</span>
-                  <strong>ভোর ৫:০০ - রাত ৪:০০ পর্যন্ত</strong>
+                  <strong>২৪ ঘণ্টা সার্বক্ষণিক (দিন ও রাত)</strong>
                 </div>
               </div>
 

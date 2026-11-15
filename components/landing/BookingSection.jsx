@@ -67,6 +67,11 @@ export default function BookingSection() {
   const [bookingNotes, setBookingNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  // Coupon state
+  const [couponCode, setCouponCode] = useState("");
+  const [couponData, setCouponData] = useState(null);
+  const [verifyingCoupon, setVerifyingCoupon] = useState(false);
+
   // Auto-fill logged in user info
   useEffect(() => {
     if (session?.user) {
@@ -172,6 +177,8 @@ export default function BookingSection() {
 
   const closeModal = () => {
     setSelectedSlot(null);
+    setCouponData(null);
+    setCouponCode("");
   };
 
   const handleSlotClick = (slotObj) => {
@@ -179,7 +186,88 @@ export default function BookingSection() {
     if (!canUseCOD) {
       setPaymentType("advance");
     }
+    setCouponData(null);
+    setCouponCode("");
     setSelectedSlot(slotObj);
+  };
+
+  // Auto-apply Special Customer Discount if user is SPECIAL_CUSTOMER
+  useEffect(() => {
+    const fetchSpecialCustomerDiscount = async () => {
+      if (session?.user?.role === "SPECIAL_CUSTOMER" && selectedSlot) {
+        try {
+          const res = await fetch("/api/coupons/special");
+          const data = await res.json();
+          if (res.ok && data.valid && data.discount) {
+            const disc = data.discount;
+            const slotPrice = getSlotPrice(selectedSlot.slot);
+            let calculatedDiscount = 0;
+            if (slotPrice > 0) {
+              if (disc.type === "fixed") {
+                calculatedDiscount = disc.discount;
+              } else if (disc.type === "percentage") {
+                calculatedDiscount = Math.round((slotPrice * disc.discount) / 100);
+              }
+            } else {
+              calculatedDiscount = disc.discount;
+            }
+
+            setCouponData({
+              code: disc.code || "SPECIAL_CUSTOMER_DISCOUNT",
+              discount: disc.discount,
+              type: disc.type,
+              description: "স্পেশাল কাস্টমার ডিসকাউন্ট",
+              discountAmount: calculatedDiscount,
+              isSpecialCustomer: true,
+            });
+            setCouponCode(disc.code || "SPECIAL_CUSTOMER_DISCOUNT");
+          }
+        } catch (err) {
+          console.error("Error fetching special customer discount:", err);
+        }
+      }
+    };
+
+    if (selectedSlot) {
+      fetchSpecialCustomerDiscount();
+    }
+  }, [session, selectedSlot]);
+
+  // Apply Coupon Code
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) {
+      toast.error("অনুগ্রহ করে একটি কুপন কোড লিখুন");
+      return;
+    }
+    if (!selectedSlot) return;
+
+    setVerifyingCoupon(true);
+    try {
+      const slotPrice = getSlotPrice(selectedSlot.slot);
+      const res = await fetch(
+        `/api/coupons?code=${encodeURIComponent(couponCode.trim().toUpperCase())}&amount=${slotPrice}`
+      );
+      const data = await res.json();
+
+      if (res.ok && data.valid) {
+        setCouponData(data.coupon);
+        toast.success(`কুপন যুক্ত হয়েছে! ৳${toBengaliDigits(data.coupon.discountAmount)} সাশ্রয়`);
+      } else {
+        toast.error(data.message || "অবৈধ কুপন কোড");
+        setCouponData(null);
+      }
+    } catch (err) {
+      toast.error("কুপন যাচাই করতে সমস্যা হয়েছে");
+      setCouponData(null);
+    } finally {
+      setVerifyingCoupon(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setCouponData(null);
+    setCouponCode("");
+    toast.success("কুপন সরানো হয়েছে");
   };
 
   // Lock body scroll and handle Escape key for modal
@@ -217,8 +305,10 @@ export default function BookingSection() {
       return;
     }
 
-    const currentPrice = getSlotPrice(selectedSlot.slot);
-    const advanceAmount = 500;
+    const rawPrice = getSlotPrice(selectedSlot.slot);
+    const discountAmount = couponData?.discountAmount || 0;
+    const finalPrice = Math.max(0, rawPrice - discountAmount);
+    const advanceAmount = Math.min(500, finalPrice > 0 ? 500 : 0);
     const activePaymentType = canUseCOD ? paymentType : "advance";
     const isAdvance = activePaymentType === "advance";
 
@@ -227,8 +317,8 @@ export default function BookingSection() {
       : "ক্যাশ বুকিং নিশ্চিতকরণ";
 
     const confirmText = isAdvance
-      ? `বিকাশের মাধ্যমে ৳${advanceAmount} অগ্রিম প্রদান করে স্লটটি নিশ্চিত করতে চান?`
-      : `আপনি কি ভেন্যুতে ৳${currentPrice.toLocaleString()} পরিশোধের শর্তে স্লটটি বুক করতে চান?`;
+      ? `বিকাশের মাধ্যমে ৳${toBengaliDigits(advanceAmount)} অগ্রিম প্রদান করে স্লটটি নিশ্চিত করতে চান?`
+      : `আপনি কি ভেন্যুতে ৳${toBengaliDigits(finalPrice)} পরিশোধের শর্তে স্লটটি বুক করতে চান?`;
 
     const result = await Swal.fire({
       title: confirmTitle,
@@ -238,9 +328,19 @@ export default function BookingSection() {
           <p><strong>সময়:</strong> ${formatSlotTimeBn(selectedSlot.slot)}</p>
           <p><strong>নাম:</strong> ${bookingName}</p>
           <p><strong>মোবাইল:</strong> ${bookingPhone}</p>
+          ${
+            couponData && discountAmount > 0
+              ? `<p style="color: #10b981;"><strong>কুপন ডিসকাউন্ট (${couponData.code}):</strong> -৳${toBengaliDigits(discountAmount)}</p>`
+              : ""
+          }
+          <p><strong>মোট ভাড়া:</strong> ${
+            couponData && discountAmount > 0
+              ? `<span style="text-decoration: line-through; color: #94a3b8;">৳${toBengaliDigits(rawPrice)}</span> `
+              : ""
+          }৳${toBengaliDigits(finalPrice)}</p>
           <p style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0; font-size: 16px;">
             <strong>${isAdvance ? "অগ্রিম প্রদেয় (বিকাশ):" : "ভেন্যুতে প্রদেয়:"}</strong>
-            <span style="color: #0096c7; font-weight: bold;">৳${isAdvance ? advanceAmount : currentPrice.toLocaleString()}</span>
+            <span style="color: #0096c7; font-weight: bold;">৳${toBengaliDigits(isAdvance ? advanceAmount : finalPrice)}</span>
           </p>
         </div>
       `,
@@ -267,10 +367,11 @@ export default function BookingSection() {
         bookingForPhone: bookingPhone,
         advanceAmount: advanceAmount,
         paidAmount: isAdvance ? advanceAmount : 0,
-        totalAmount: isAdvance ? advanceAmount : currentPrice,
-        finalPrice: currentPrice,
-        originalAmount: currentPrice,
-        discountAmount: 0,
+        totalAmount: isAdvance ? advanceAmount : finalPrice,
+        finalPrice: finalPrice,
+        originalAmount: rawPrice,
+        couponCode: couponData?.code || null,
+        discountAmount: discountAmount,
         bookingByRole: session?.user?.role || "GUEST",
       };
 
@@ -329,6 +430,10 @@ export default function BookingSection() {
   };
 
   const selectedDateObj = datesList.find((d) => d.dateStr === selectedDate);
+  const rawPrice = selectedSlot ? getSlotPrice(selectedSlot.slot) : 0;
+  const discountAmount = couponData?.discountAmount || 0;
+  const finalPrice = Math.max(0, rawPrice - discountAmount);
+  const advanceAmount = Math.min(500, finalPrice > 0 ? 500 : 0);
 
   return (
     <section className="s-book s-wrap" id="booking" aria-labelledby="book-h">
@@ -552,8 +657,46 @@ export default function BookingSection() {
 
                   <div className="s-sum-price">
                     <span>মোট ভাড়া:</span>
-                    <b>৳{toBengaliDigits(getSlotPrice(selectedSlot.slot))}</b>
+                    <div>
+                      {couponData && discountAmount > 0 ? (
+                        <div style={{ display: "flex", alignItems: "baseline", gap: "8px", justifyContent: "flex-end" }}>
+                          <span
+                            style={{
+                              textDecoration: "line-through",
+                              color: "var(--muted)",
+                              fontSize: "15px",
+                              fontWeight: 500,
+                            }}
+                          >
+                            ৳{toBengaliDigits(rawPrice)}
+                          </span>
+                          <b>৳{toBengaliDigits(finalPrice)}</b>
+                        </div>
+                      ) : (
+                        <b>৳{toBengaliDigits(rawPrice)}</b>
+                      )}
+                    </div>
                   </div>
+
+                  {couponData && discountAmount > 0 && (
+                    <div
+                      style={{
+                        marginTop: "12px",
+                        padding: "8px 10px",
+                        background: "rgba(16, 185, 129, 0.12)",
+                        border: "1px solid rgba(16, 185, 129, 0.25)",
+                        borderRadius: "6px",
+                        fontSize: "12.5px",
+                        color: "#34d399",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span>কুপন ডিসকাউন্ট ({couponData.code}):</span>
+                      <b>-৳{toBengaliDigits(discountAmount)}</b>
+                    </div>
+                  )}
 
                   <div style={{ marginTop: "18px", fontSize: "13px", color: "var(--muted)" }}>
                     💡 অগ্রিম পেমেন্টে মাত্র ৳৫০০ প্রদান করে স্লট কনফার্ম করতে পারবেন।
@@ -633,6 +776,101 @@ export default function BookingSection() {
                     </div>
                   )}
 
+                  {/* কুপন কোড */}
+                  <div className="s-field">
+                    <label htmlFor="coupon-code">কুপন কোড (ঐচ্ছিক)</label>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                      <input
+                        id="coupon-code"
+                        type="text"
+                        placeholder="কুপন কোড লিখুন"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        disabled={!!couponData || verifyingCoupon}
+                        style={{
+                          flex: 1,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.5px",
+                          fontFamily: "monospace",
+                          fontWeight: "600",
+                        }}
+                      />
+                      {!couponData ? (
+                        <button
+                          type="button"
+                          onClick={handleApplyCoupon}
+                          disabled={verifyingCoupon || !couponCode.trim()}
+                          className="s-btn"
+                          style={{
+                            whiteSpace: "nowrap",
+                            padding: "0 18px",
+                            height: "46px",
+                            backgroundColor: "var(--accent)",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "var(--r-sm)",
+                            cursor: verifyingCoupon || !couponCode.trim() ? "not-allowed" : "pointer",
+                            opacity: verifyingCoupon || !couponCode.trim() ? 0.6 : 1,
+                            fontWeight: 600,
+                            fontSize: "14px",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            transition: "all 0.2s ease",
+                          }}
+                        >
+                          {verifyingCoupon ? "যাচাই হচ্ছে..." : "প্রয়োগ করুন"}
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={handleRemoveCoupon}
+                          className="s-btn"
+                          style={{
+                            whiteSpace: "nowrap",
+                            padding: "0 18px",
+                            height: "46px",
+                            backgroundColor: "rgba(239, 68, 68, 0.15)",
+                            color: "#f87171",
+                            border: "1px solid rgba(239, 68, 68, 0.3)",
+                            borderRadius: "var(--r-sm)",
+                            cursor: "pointer",
+                            fontWeight: 600,
+                            fontSize: "14px",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            transition: "all 0.2s ease",
+                          }}
+                        >
+                          মুছে ফেলুন
+                        </button>
+                      )}
+                    </div>
+                    {couponData && (
+                      <div
+                        style={{
+                          marginTop: "8px",
+                          padding: "8px 12px",
+                          background: "rgba(16, 185, 129, 0.12)",
+                          border: "1px solid rgba(16, 185, 129, 0.3)",
+                          borderRadius: "var(--r-sm)",
+                          color: "#34d399",
+                          fontSize: "13px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <span>
+                          ✓ কুপন যুক্ত হয়েছে: <strong>{couponData.code}</strong>{" "}
+                          {couponData.description ? `(${couponData.description})` : ""}
+                        </span>
+                        <strong>-৳{toBengaliDigits(couponData.discountAmount)}</strong>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="s-field">
                     <label htmlFor="booking-notes">বিশেষ কোনো অনুরোধ (ঐচ্ছিক)</label>
                     <input
@@ -662,7 +900,7 @@ export default function BookingSection() {
                         ? "প্রসেস হচ্ছে..."
                         : canUseCOD && paymentType === "cod"
                         ? "ক্যাশ বুকিং নিশ্চিত করুন"
-                        : "বিকাশে অগ্রিম পে করুন (৳৫০০)"}
+                        : `বিকাশে অগ্রিম পে করুন (৳${toBengaliDigits(advanceAmount)})`}
                     </button>
 
                     <button

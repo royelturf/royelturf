@@ -1,15 +1,23 @@
+"use client";
+
 import React from "react";
+import Image from "next/image";
+import heroBg from "@/public/images/hero-turf-bg.jpg";
 
 export default function HeroSection() {
   return (
     <section className="s-hero" aria-labelledby="hero-h">
-      <div className="s-hero-scene">
-        <div className="stadium-root" aria-hidden="true">
-          <div className="stadium-turf"></div>
-          <div className="stadium-lamp"></div>
-          <div className="stadium-lamp"></div>
-          <div className="stadium-lamp"></div>
-          <div className="stadium-lamp"></div>
+      <div className="s-hero-scene" aria-hidden="true">
+        <div className="s-hero-bg-wrap">
+          <Image
+            src={heroBg}
+            alt="রয়েল টার্ফ ও সুইমিং জোন এর ফুটবল মাঠ"
+            fill
+            priority
+            quality={90}
+            className="s-hero-bg-img"
+            sizes="100vw"
+          />
         </div>
         <div className="s-scrim"></div>
       </div>
@@ -35,7 +43,8 @@ export default function HeroSection() {
         </h1>
 
         <p className="s-hero-sub">
-          আন্তর্জাতিক মানের কৃত্রিম টার্ফ, পাওয়ারফুল ফ্লাডলাইট এবং আধুনিক সুইমিং জোন নিয়ে কুমিল্লার লালমায়ে সেরা স্পোর্টস অভিজ্ঞতা।
+          আন্তর্জাতিক মানের কৃত্রিম টার্ফ, পাওয়ারফুল ফ্লাডলাইট এবং আধুনিক সুইমিং
+          জোন নিয়ে কুমিল্লার লালমায়ে সেরা স্পোর্টস অভিজ্ঞতা।
         </p>
 
         <div className="s-hero-ctas">
