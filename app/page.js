@@ -1,26 +1,27 @@
-import React from 'react'
-// import Image from 'next/image'
-// import DarkLogo from '@/public/images/darklogo.png'
-import Link from 'next/link'
-import Hero from '@/components/Hero'
-import Turfs from '@/components/Turfs'
-import Map from '@/components/Map'
-import Gallery from '@/components/Gallery'
-import Facilites from '@/components/Facilites'
+import React from "react";
+import LandingHeader from "@/components/landing/LandingHeader";
+import HeroSection from "@/components/landing/HeroSection";
+import BookingSection from "@/components/landing/BookingSection";
+import PricingSection from "@/components/landing/PricingSection";
+import AmenitiesSection from "@/components/landing/AmenitiesSection";
+import FooterSection from "@/components/landing/FooterSection";
 
-const home = () => {
+export const metadata = {
+  title: "রয়েল টার্ফ এন্ড সুইমিং জোন · প্রতিদ্বন্দ্বিতায় নামো, সেরাটা দেখাও!",
+  description: "কুমিল্লার লালমায়ে প্রিমিয়াম কৃত্রিম টার্ফ ও আধুনিক সুইমিং জোন। অনলাইনে স্লট দেখুন এবং সহজে বুক করুন।",
+};
+
+export default function Home() {
   return (
-    <>
-      <Hero />
-      <Turfs />
-      <Facilites />
-      <Map />
-      <Gallery />
-      <Link href='/booking'>
-        <span className='tertiary-button sticky-button'>Book Now</span>
-      </Link>
-    </>
-  )
+    <div className="site">
+      <LandingHeader />
+      <main>
+        <HeroSection />
+        <BookingSection />
+        <PricingSection />
+        <AmenitiesSection />
+      </main>
+      <FooterSection />
+    </div>
+  );
 }
-
-export default home

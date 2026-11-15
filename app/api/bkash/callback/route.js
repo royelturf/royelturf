@@ -18,13 +18,13 @@ export async function GET(request) {
       await BkashPendingPayment.findOneAndDelete({ bkashPaymentID: paymentID });
       const failMessage = status === "cancel" ? "Payment+cancel" : "Payment+failure";
       return NextResponse.redirect(
-        `${process.env.NEXTAUTH_URL}/booking?status=failed&message=${failMessage}`
+        `${process.env.NEXTAUTH_URL}/?status=failed&message=${failMessage}`
       );
     } catch (err) {
       console.error("Cleanup error on cancel/fail:", err);
       const failMessage = status === "cancel" ? "Payment+cancel" : "Payment+failure";
       return NextResponse.redirect(
-        `${process.env.NEXTAUTH_URL}/booking?status=failed&message=${failMessage}`
+        `${process.env.NEXTAUTH_URL}/?status=failed&message=${failMessage}`
       );
     }
   }

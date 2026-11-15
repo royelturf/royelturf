@@ -1,138 +1,181 @@
 "use client";
+
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react";
-
-import SignupImage from "@/public/images/sky-signin.jpg";
+import { Eye, EyeOff, Phone, Lock, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
+import LandingHeader from "@/components/landing/LandingHeader";
+import FooterSection from "@/components/landing/FooterSection";
 
 export default function SigninPage() {
   const [form, setForm] = useState({ phone: "", password: "" });
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
+    if (!form.phone || !form.password) {
+      toast.error("মোবাইল নম্বর ও পাসওয়ার্ড প্রদান করুন");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const res = await signIn("credentials", {
-        phone: form.phone,
+        phone: form.phone.trim(),
         password: form.password,
         redirect: false,
       });
 
-
-      setLoading(false);
-
       if (!res?.error) {
-        toast.success("Login successful!");
+        toast.success("লগইন সফল হয়েছে!");
         window.location.href = "/dashboard";
       } else {
-        toast.error("Invalid phone or password");
+        toast.error("মোবাইল নম্বর বা পাসওয়ার্ড সঠিক নয়");
       }
-
     } catch (err) {
       console.error("Login error:", err);
+      toast.error("লগইন করতে সমস্যা হয়েছে, আবার চেষ্টা করুন");
     } finally {
       setLoading(false);
     }
   };
 
-
-
+  const handleForgotPassword = () => {
+    Swal.fire({
+      icon: "info",
+      title: "পাসওয়ার্ড ভুলে গেছেন?",
+      html: `
+        <div style="color: #94a3b8; font-size: 14.5px; line-height: 1.6; text-align: center;">
+          পাসওয়ার্ড রিসেট বা রিকভারির জন্য অনুগ্রহ করে রয়েল টার্ফের হেল্পলাইনে যোগাযোগ করুন:
+          <br /><br />
+          <strong style="color: #0096c7; font-size: 20px; letter-spacing: 0.5px;">০১৬১৬-৭৫৩৬৭১</strong>
+          <br />
+          <span style="color: #64748b; font-size: 13px;">চেয়ারম্যান বাড়ি, গোসাই পুষ্করিণী, লালমাই, কুমিল্লা</span>
+        </div>
+      `,
+      confirmButtonColor: "#0096c7",
+      confirmButtonText: "ঠিক আছে",
+      background: "#0e172e",
+      color: "#f0f6fc",
+    });
+  };
 
   return (
-    <section className="signin">
-      <div className="container">
-        <div className="signin__content">
-          <div className="signin__image-wrap">
-            <Image
-              src={SignupImage}
-              alt="Signin"
-              width={500}
-              className="signin__image"
-            />
+    <div className="site">
+      {/* Same Website Navbar */}
+      <LandingHeader />
+
+      {/* Main Form Center Card */}
+      <main className="rt-auth-main">
+        <div className="rt-auth-card">
+          <div className="rt-card-header">
+            <h1>লগইন করুন</h1>
+            <p>আপনার অ্যাকাউন্ট দিয়ে সাইন ইন করে বুকিং পরিচালনা করুন</p>
           </div>
 
-          <div className="signin__form-wrap">
-            <h3 className="secondary-heading signin__heading">
-              Welcome to Royel Turf & Swimming Zone
-            </h3>
-            <p className="primary-text signin__text">
-              The Home of Football in Buchi
-            </p>
-
-            <form className="signin__form" onSubmit={handleLogin}>
-              <label className="signin__form-label" htmlFor="phone">
-                Phone
+          <form className="rt-form" onSubmit={handleLogin}>
+            {/* Phone Field */}
+            <div className="rt-field">
+              <label htmlFor="auth-phone">
+                মোবাইল নম্বর <span className="req">*</span>
               </label>
-              <input
-                className="signin__form-input"
-                name="phone"
-                type="text"
-                placeholder="Phone"
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                id="phone"
-                required
-              />
-
-              <label className="signin__form-label" htmlFor="password">
-                Password
-              </label>
-              <div className="signin__form-input-pass-wrap">
+              <div className="rt-input-wrap">
+                <Phone className="rt-icon" size={18} />
                 <input
-                  className="signin__form-input signin__form-input--password"
+                  id="auth-phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="০১XXXXXXXXX"
+                  required
+                  value={form.phone}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      phone: e.target.value.replace(/\s+/g, ""),
+                    })
+                  }
+                  autoComplete="tel"
+                />
+              </div>
+            </div>
+
+            {/* Password Field */}
+            <div className="rt-field">
+              <label htmlFor="auth-password">
+                পাসওয়ার্ড <span className="req">*</span>
+              </label>
+              <div className="rt-input-wrap">
+                <Lock className="rt-icon" size={18} />
+                <input
+                  id="auth-password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  id="password"
+                  placeholder="আপনার পাসওয়ার্ড দিন"
                   required
+                  value={form.password}
+                  onChange={(e) =>
+                    setForm({ ...form, password: e.target.value })
+                  }
+                  autoComplete="current-password"
                 />
                 <button
                   type="button"
-                  className="signin__form-input-pass-eye"
+                  className="rt-eye-btn"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখান"}
                 >
-                  {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+                  {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
                 </button>
               </div>
+            </div>
 
-              {error && (
-                <p style={{ color: "red", marginTop: "10px" }}>{error}</p>
-              )}
-
-              <Link href="">
-                <span className="signin__forgot-pass-text">
-                  Forgot Password
-                </span>
-              </Link>
-
-              <button
-                className="secondary-button signin__button"
-                type="submit"
-                disabled={loading}
-              >
-                {loading ? "Logging in..." : "Login"}
+            {/* Forgot Password */}
+            <div className="rt-forgot-row">
+              <button type="button" onClick={handleForgotPassword}>
+                পাসওয়ার্ড ভুলে গেছেন?
               </button>
+            </div>
 
-              <p className="signin__acc-text">
-                Do not have an account?{" "}
-                <Link href="/signup">
-                  <span className="signin__link-text">Sign Up</span>
-                </Link>
-              </p>
-            </form>
-          </div>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="rt-submit-btn"
+              disabled={loading}
+            >
+              {loading ? (
+                "লগইন হচ্ছে..."
+              ) : (
+                <>
+                  <span>লগইন করুন</span>
+                  <ArrowRight size={17} />
+                </>
+              )}
+            </button>
+
+            {/* Divider */}
+            <div className="rt-divider">
+              <span>অথবা</span>
+            </div>
+
+            {/* Switch to Sign Up */}
+            <p className="rt-switch">
+              নতুন মেম্বার?{" "}
+              <Link href="/signup">
+                নতুন অ্যাকাউন্ট তৈরি করুন (সাইন আপ) →
+              </Link>
+            </p>
+          </form>
         </div>
-      </div>
-    </section>
+      </main>
+
+      {/* Same Website Footer */}
+      <FooterSection />
+    </div>
   );
 }
