@@ -7,8 +7,6 @@ import {
   Sun,
   Sunset,
   Moon,
-  Clock,
-  CheckCircle2,
   ChevronRight,
 } from "lucide-react";
 
@@ -18,9 +16,9 @@ const SHIFTS = [
     title: "ওপেন শিফট",
     time: "সকাল ০৬:০০ - ১১:০০",
     icon: Sunrise,
-    price: "৳১,১০০",
-    regularPrice: "৳১,৭০০",
-    saveAmount: "৳৬০০",
+    price: "৳১,২০০",
+    regularPrice: "৳১,৫০০",
+    saveAmount: "৳৩০০",
     desc: "দিনের ফ্রেশ আবহে ফিটনেস রুটিন, একাডেমি ড্রিল এবং মর্নিং ফ্রেন্ডলি ম্যাচের জন্য আদর্শ।",
     popular: false,
     features: [
@@ -52,9 +50,9 @@ const SHIFTS = [
     title: "আফটারনুন শিফট",
     time: "দুপুর ০৩:০০ - বিকাল ০৫:০০",
     icon: Sunset,
-    price: "৳১,৫০০",
-    regularPrice: "৳২,০০০",
-    saveAmount: "৳৫০০",
+    price: "৳১,৪০০",
+    regularPrice: "৳১,৮০০",
+    saveAmount: "৳৪০০",
     desc: "সূর্যাস্তের আগের মনোরম আবহাওয়া, শীতল বাতাস ও চমৎকার প্রাকৃতিক আলোতে সেরা ফুটবল উপভোগ করুন।",
     popular: false,
     features: [
@@ -67,31 +65,14 @@ const SHIFTS = [
   {
     id: "night",
     title: "নাইট শিফট",
-    time: "বিকাল ০৫:০০ - রাত ০১:০০",
+    time: "বিকাল ০৫:০০ - সকাল ০৬:০০",
     icon: Moon,
-    price: "৳২,২০০",
-    regularPrice: "৳২,৮০০",
-    saveAmount: "৳৬০০",
+    price: "৳১,৮০০",
+    regularPrice: "৳২,৫০০",
+    saveAmount: "৳৭০০",
     desc: "আন্তর্জাতিক মানের এলইডি ফ্লাডলাইটে উৎসবমুখর টুর্নামেন্ট ও পিক আওয়ারের জমজমাট ম্যাচ।",
     popular: true,
-    popularBadge: "সবচেয়ে জনপ্রিয় • ৮টি স্লট",
-    features: [
-      "৫০ মিমি ফিফা সার্টিফাইড সিন্থেটিক টার্ফ",
-      "হাই-লাক্স এলইডি ফ্লাডলাইট সুবিধা",
-      "বিবস ও কোয়ালিটি ম্যাচ বল সরবরাহ",
-      "ডাগআউট, ড্রেসিং ও ওয়াশরুম সুবিধা",
-    ],
-  },
-  {
-    id: "close",
-    title: "ক্লোজ শিফট",
-    time: "রাত ০১:০০ - সকাল ০৬:০০",
-    icon: Clock,
-    price: "৳২,০০০",
-    regularPrice: "৳২,৫০০",
-    saveAmount: "৳৫০০",
-    desc: "ডাই-হার্ড টিম ও উইকএন্ড নাইট লিগের জন্য ১০০% নিরবচ্ছিন্ন বিদ্যুৎ ব্যাকআপ সহ গভীর রাতের ফুটবল।",
-    popular: false,
+    popularBadge: "সবচেয়ে জনপ্রিয় শিফট",
     features: [
       "৫০ মিমি ফিফা সার্টিফাইড সিন্থেটিক টার্ফ",
       "হাই-লাক্স এলইডি ফ্লাডলাইট সুবিধা",
@@ -102,9 +83,6 @@ const SHIFTS = [
 ];
 
 export default function PricingSection() {
-  const topShifts = SHIFTS.slice(0, 3);
-  const bottomShifts = SHIFTS.slice(3, 5);
-
   const renderCard = (shift) => {
     const IconComponent = shift.icon;
 
@@ -149,16 +127,6 @@ export default function PricingSection() {
 
           {/* Description */}
           <p className="s-shift-desc">{shift.desc}</p>
-
-          {/* Checklist */}
-          {/* <ul className="s-shift-features">
-            {shift.features.map((feat, idx) => (
-              <li key={idx}>
-                <CheckCircle2 size={16} className="s-check-icon" />
-                <span>{feat}</span>
-              </li>
-            ))}
-          </ul> */}
         </div>
 
         {/* CTA Button */}
@@ -191,16 +159,9 @@ export default function PricingSection() {
           </p>
         </div>
 
-        <div className="s-shifts-container">
-          {/* Row 1: 3 Cards */}
-          <div className="s-shifts-row s-shifts-row--3">
-            {topShifts.map(renderCard)}
-          </div>
-
-          {/* Row 2: 2 Cards */}
-          <div className="s-shifts-row s-shifts-row--2">
-            {bottomShifts.map(renderCard)}
-          </div>
+        {/* 4 Shift Cards Grid */}
+        <div className="s-shifts-grid">
+          {SHIFTS.map(renderCard)}
         </div>
       </div>
     </section>

@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { calculateSlotPrice } from "@/lib/pricing";
+import TutorialVideoModal from "./TutorialVideoModal";
 
 export const toBengaliDigits = (num) => {
   if (num === null || num === undefined) return "";
@@ -72,6 +73,32 @@ export default function BookingSection() {
   const [couponData, setCouponData] = useState(null);
   const [verifyingCoupon, setVerifyingCoupon] = useState(false);
 
+  // How to book tutorial video modal state
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+
+  // Available slot counts for each date (dateStr -> count)
+  const [slotCounts, setSlotCounts] = useState({});
+  const [loadingCounts, setLoadingCounts] = useState(false);
+
+  // Fetch slot counts for all upcoming dates in one call
+  const fetchAllSlotCounts = async (startDate, endDate) => {
+    if (!startDate || !endDate) return;
+    setLoadingCounts(true);
+    try {
+      const res = await fetch(
+        `/api/bookings/slots?arena=${encodeURIComponent("Royel Turf & Swimming Zone")}&startDate=${startDate}&endDate=${endDate}`
+      );
+      const data = await res.json();
+      if (res.ok && data.counts) {
+        setSlotCounts(data.counts);
+      }
+    } catch (err) {
+      console.error("Error fetching all slot counts:", err);
+    } finally {
+      setLoadingCounts(false);
+    }
+  };
+
   // Auto-fill logged in user info
   useEffect(() => {
     if (session?.user) {
@@ -107,6 +134,7 @@ export default function BookingSection() {
     setDatesList(list);
     if (list.length > 0) {
       setSelectedDate(list[0].dateStr);
+      fetchAllSlotCounts(list[0].dateStr, list[list.length - 1].dateStr);
     }
   }, []);
 
@@ -136,7 +164,10 @@ export default function BookingSection() {
       );
       const data = await res.json();
       if (res.ok) {
-        setSlots(data.slots || []);
+        const fetchedSlots = data.slots || [];
+        setSlots(fetchedSlots);
+        const freeCount = fetchedSlots.filter((s) => s.status === "available").length;
+        setSlotCounts((prev) => ({ ...prev, [date]: freeCount }));
       } else {
         setSlots([]);
       }
@@ -400,6 +431,9 @@ export default function BookingSection() {
 
         setSelectedSlot(null);
         fetchSlots(selectedDate);
+        if (datesList.length > 0) {
+          fetchAllSlotCounts(datesList[0].dateStr, datesList[datesList.length - 1].dateStr);
+        }
       } else {
         // bKash Advance
         const response = await fetch("/api/bkash/create-payment", {
@@ -437,12 +471,42 @@ export default function BookingSection() {
 
   return (
     <section className="s-book s-wrap" id="booking" aria-labelledby="book-h">
-      <h2 className="s-h2" id="book-h">
-        কখন খেলবেন?
-      </h2>
-      <p className="s-lede">
-        আপনার পছন্দের তারিখ ও সময় বেছে নিন এবং সহজেই বুকিং সম্পন্ন করুন
-      </p>
+      {/* Booking Header with How to Book (How It Works) Action */}
+      <div className="s-book-head">
+        <div className="s-book-head-info">
+          <h2 className="s-h2" id="book-h">
+            কখন খেলবেন?
+          </h2>
+          <p className="s-lede">
+            আপনার পছন্দের তারিখ ও সময় বেছে নিন এবং সহজেই বুকিং সম্পন্ন করুন
+          </p>
+        </div>
+
+        <div className="s-book-head-action">
+          <button
+            type="button"
+            className="s-book-how-btn"
+            onClick={() => setVideoModalOpen(true)}
+            title="কীভাবে মাঠ বা স্লট বুক করবেন ভিডিও টিউটোরিয়াল দেখুন"
+          >
+            <div className="s-bhb-icon-wrap" aria-hidden="true">
+              <span className="s-bhb-pulse"></span>
+              <span className="s-bhb-play">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </span>
+            </div>
+            <div className="s-bhb-body">
+              <div className="s-bhb-badge">
+                <span>ভিডিও গাইড</span>
+              </div>
+              <strong className="s-bhb-title">কীভাবে বুক করবেন?</strong>
+              <span className="s-bhb-sub">সহজ ৩ ধাপে বুকিং নিয়ম দেখুন →</span>
+            </div>
+          </button>
+        </div>
+      </div>
 
       {/* Date Carousel */}
       <div className="s-dates-bar">
@@ -472,6 +536,18 @@ export default function BookingSection() {
         >
           {datesList.map((d) => {
             const isSelected = selectedDate === d.dateStr;
+            const count = slotCounts[d.dateStr];
+            let countLabel = "";
+            if (count !== undefined) {
+              countLabel = count === 0 ? "সব ভরা" : `${toBengaliDigits(count)}টি খালি`;
+            } else if (isSelected) {
+              countLabel = loadingSlots
+                ? "খুঁজছি..."
+                : `${toBengaliDigits(availableSlotsCount)}টি খালি`;
+            } else {
+              countLabel = loadingCounts ? "খুঁজছি..." : "খালি...";
+            }
+
             return (
               <button
                 key={d.dateStr}
@@ -482,13 +558,7 @@ export default function BookingSection() {
               >
                 <span className="dw">{d.dayOfWeek}</span>
                 <span className="dd">{d.dayNum}</span>
-                <span className="df">
-                  {isSelected && loadingSlots
-                    ? "খুঁজছি..."
-                    : isSelected
-                    ? `${toBengaliDigits(availableSlotsCount)}টি খালি`
-                    : "তারিখ"}
-                </span>
+                <span className="df">{countLabel}</span>
               </button>
             );
           })}
@@ -917,6 +987,12 @@ export default function BookingSection() {
           </div>
         </div>
       )}
+
+      {/* Tutorial Video Modal */}
+      <TutorialVideoModal
+        isOpen={videoModalOpen}
+        onClose={() => setVideoModalOpen(false)}
+      />
     </section>
   );
 }

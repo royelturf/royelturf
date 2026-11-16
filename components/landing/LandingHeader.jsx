@@ -1,13 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import mainLogo from "@/public/images/main-logo.png";
-
-// You can replace this tutorial video URL with your own YouTube video link at any time
-const TUTORIAL_VIDEO_URL = "https://youtu.be/qrlQqVRXedo?si=7aiWXkFqdtGBtUTn";
+import TutorialVideoModal from "./TutorialVideoModal";
 
 export default function LandingHeader() {
   const { data: session } = useSession();
@@ -16,23 +14,6 @@ export default function LandingHeader() {
 
   const toggleMobile = () => setMobileOpen((prev) => !prev);
   const closeMobile = () => setMobileOpen(false);
-
-  // Lock body scroll and handle Escape key for the video modal
-  useEffect(() => {
-    if (videoModalOpen) {
-      document.body.style.overflow = "hidden";
-      const handleKeyDown = (e) => {
-        if (e.key === "Escape") setVideoModalOpen(false);
-      };
-      window.addEventListener("keydown", handleKeyDown);
-      return () => {
-        document.body.style.overflow = "";
-        window.removeEventListener("keydown", handleKeyDown);
-      };
-    } else {
-      document.body.style.overflow = "";
-    }
-  }, [videoModalOpen]);
 
   return (
     <>
@@ -54,6 +35,7 @@ export default function LandingHeader() {
             <Link href="/#booking">স্লট</Link>
             <Link href="/#prices">দাম</Link>
             <Link href="/#amenities">সুবিধা</Link>
+            <Link href="/gallery">গ্যালারি</Link>
             <Link href="/#visit">ঠিকানা</Link>
 
             {/* How to Book video button */}
@@ -114,6 +96,7 @@ export default function LandingHeader() {
             <Link href="/#booking" onClick={closeMobile}>স্লট বুকিং</Link>
             <Link href="/#prices" onClick={closeMobile}>দাম ও প্যাকেজ</Link>
             <Link href="/#amenities" onClick={closeMobile}>টার্ফ সুবিধা</Link>
+            <Link href="/gallery" onClick={closeMobile}>ফটো গ্যালারি</Link>
             <Link href="/#visit" onClick={closeMobile}>ঠিকানা ও যোগাযোগ</Link>
 
             {/* Mobile How to Book button */}
@@ -150,100 +133,10 @@ export default function LandingHeader() {
       </header>
 
       {/* How to Book Video Modal */}
-      {videoModalOpen && (
-        <div
-          className="s-video-modal-backdrop"
-          onClick={() => setVideoModalOpen(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="video-modal-title"
-        >
-          <div
-            className="s-video-modal-card"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="s-video-modal-head">
-              <div className="s-video-modal-title">
-                <div className="s-v-icon" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 id="video-modal-title">কীভাবে স্লট বুক করবেন?</h3>
-                  <span>সহজ ৩টি ধাপে স্লট নির্বাচন ও কনফার্মেশন গাইড</span>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                className="s-video-modal-close"
-                onClick={() => setVideoModalOpen(false)}
-                aria-label="ভিডিও বন্ধ করুন"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
-            </div>
-
-            <div className="s-video-modal-body">
-              <div className="s-video-frame-wrap">
-                <iframe
-                  src={TUTORIAL_VIDEO_URL}
-                  title="কীভাবে বুক করবেন - ভিডিও টিউটোরিয়াল"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                ></iframe>
-              </div>
-
-              <div className="s-video-steps">
-                <div className="s-v-step">
-                  <div className="s-v-step-num">১</div>
-                  <div className="s-v-step-text">
-                    <strong>স্লট নির্বাচন</strong>
-                    ক্যালেন্ডার থেকে আপনার পছন্দের তারিখ ও ফাঁকা স্লট বেছে নিন।
-                  </div>
-                </div>
-
-                <div className="s-v-step">
-                  <div className="s-v-step-num">২</div>
-                  <div className="s-v-step-text">
-                    <strong>তথ্য ও কুপন</strong>
-                    আপনার নাম, মোবাইল নম্বর দিন এবং কুপন কোড থাকলে প্রয়োগ করুন।
-                  </div>
-                </div>
-
-                <div className="s-v-step">
-                  <div className="s-v-step-num">৩</div>
-                  <div className="s-v-step-text">
-                    <strong>বিকাশ অগ্রিম পেমেন্ট</strong>
-                    বিকাশে মাত্র ৳৫০০ অগ্রিম প্রদান করলেই স্লট নিশ্চিত হয়ে যাবে।
-                  </div>
-                </div>
-              </div>
-
-              <div className="s-video-modal-footer">
-                <button
-                  type="button"
-                  className="s-btn s-btn-ghost"
-                  onClick={() => setVideoModalOpen(false)}
-                >
-                  বন্ধ করুন
-                </button>
-                <Link
-                  href="/#booking"
-                  className="s-btn s-btn-primary"
-                  onClick={() => setVideoModalOpen(false)}
-                >
-                  এখনই বুক করুন →
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <TutorialVideoModal
+        isOpen={videoModalOpen}
+        onClose={() => setVideoModalOpen(false)}
+      />
     </>
   );
 }

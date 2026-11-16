@@ -7,8 +7,6 @@ import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Phone, Lock, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
-import LandingHeader from "@/components/landing/LandingHeader";
-import FooterSection from "@/components/landing/FooterSection";
 
 export default function SigninPage() {
   const [form, setForm] = useState({ phone: "", password: "" });
@@ -68,12 +66,8 @@ export default function SigninPage() {
 
   return (
     <div className="site">
-      {/* Same Website Navbar */}
-      <LandingHeader />
-
-      {/* Main Form Center Card */}
       <main className="rt-auth-main">
-        <div className="rt-auth-card">
+      <div className="rt-auth-card">
           <div className="rt-card-header">
             <h1>লগইন করুন</h1>
             <p>আপনার অ্যাকাউন্ট দিয়ে সাইন ইন করে বুকিং পরিচালনা করুন</p>
@@ -173,9 +167,6 @@ export default function SigninPage() {
           </form>
         </div>
       </main>
-
-      {/* Same Website Footer */}
-      <FooterSection />
     </div>
   );
 }
