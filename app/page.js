@@ -1,10 +1,9 @@
 import React from "react";
-import LandingHeader from "@/components/landing/LandingHeader";
 import HeroSection from "@/components/landing/HeroSection";
 import BookingSection from "@/components/landing/BookingSection";
 import PricingSection from "@/components/landing/PricingSection";
 import AmenitiesSection from "@/components/landing/AmenitiesSection";
-import FooterSection from "@/components/landing/FooterSection";
+import GallerySection from "@/components/landing/GallerySection";
 
 export const metadata = {
   title: "রয়েল টার্ফ এন্ড সুইমিং জোন · প্রতিদ্বন্দ্বিতায় নামো, সেরাটা দেখাও!",
@@ -14,14 +13,13 @@ export const metadata = {
 export default function Home() {
   return (
     <div className="site">
-      <LandingHeader />
       <main>
         <HeroSection />
         <BookingSection />
         <PricingSection />
         <AmenitiesSection />
+        <GallerySection />
       </main>
-      <FooterSection />
     </div>
   );
 }

@@ -13,8 +13,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { toast } from "react-hot-toast";
-import LandingHeader from "@/components/landing/LandingHeader";
-import FooterSection from "@/components/landing/FooterSection";
 
 const isValidBDPhone = (phone) => {
   const bdRegex = /^(013|014|015|016|017|018|019)\d{8}$/;
@@ -98,12 +96,8 @@ export default function SignupPage() {
 
   return (
     <div className="site">
-      {/* Same Website Navbar */}
-      <LandingHeader />
-
-      {/* Main Form Center Card */}
       <main className="rt-auth-main">
-        <div className="rt-auth-card rt-auth-card--signup">
+      <div className="rt-auth-card rt-auth-card--signup">
           <div className="rt-card-header">
             <h1>নতুন অ্যাকাউন্ট তৈরি করুন</h1>
             <p>সহজে স্লট বুকিং ও আপনার খেলার হিস্ট্রি দেখতে রেজিস্টার করুন</p>
@@ -278,9 +272,6 @@ export default function SignupPage() {
           </form>
         </div>
       </main>
-
-      {/* Same Website Footer */}
-      <FooterSection />
     </div>
   );
 }
