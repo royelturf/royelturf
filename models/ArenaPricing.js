@@ -12,10 +12,15 @@ const pricingSchema = new mongoose.Schema(
       required: true,
       default: 2000,
     },
+    defaultRegularPrice: {
+      type: Number,
+      default: 2500,
+    },
     timeSlots: [
       {
         slot: { type: String, required: true }, // e.g. "06:00am to 07:30am"
         price: { type: Number, required: true },
+        regularPrice: { type: Number, default: null },
       },
     ],
     // Friday pricing configuration
@@ -23,10 +28,15 @@ const pricingSchema = new mongoose.Schema(
       type: Number,
       default: null,
     },
+    fridayDefaultRegularPrice: {
+      type: Number,
+      default: null,
+    },
     fridayTimeSlots: [
       {
         slot: { type: String, required: true },
         price: { type: Number, required: true },
+        regularPrice: { type: Number, default: null },
       },
     ],
     // Saturday pricing configuration
@@ -34,10 +44,15 @@ const pricingSchema = new mongoose.Schema(
       type: Number,
       default: null,
     },
+    saturdayDefaultRegularPrice: {
+      type: Number,
+      default: null,
+    },
     saturdayTimeSlots: [
       {
         slot: { type: String, required: true },
         price: { type: Number, required: true },
+        regularPrice: { type: Number, default: null },
       },
     ],
   },

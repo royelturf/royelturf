@@ -20,10 +20,13 @@ export async function POST(req) {
     const {
       arenaName,
       defaultPrice,
+      defaultRegularPrice,
       timeSlots,
       fridayDefaultPrice,
+      fridayDefaultRegularPrice,
       fridayTimeSlots,
       saturdayDefaultPrice,
+      saturdayDefaultRegularPrice,
       saturdayTimeSlots,
     } = data;
 
@@ -34,13 +37,20 @@ export async function POST(req) {
     const updateFields = {
       arenaName,
       defaultPrice: Number(defaultPrice) || 2000,
+      defaultRegularPrice: Number(defaultRegularPrice) || 2500,
       timeSlots: Array.isArray(timeSlots) ? timeSlots : [],
       fridayDefaultPrice: fridayDefaultPrice !== null && fridayDefaultPrice !== undefined && fridayDefaultPrice !== ""
         ? Number(fridayDefaultPrice)
         : null,
+      fridayDefaultRegularPrice: fridayDefaultRegularPrice !== null && fridayDefaultRegularPrice !== undefined && fridayDefaultRegularPrice !== ""
+        ? Number(fridayDefaultRegularPrice)
+        : null,
       fridayTimeSlots: Array.isArray(fridayTimeSlots) ? fridayTimeSlots : [],
       saturdayDefaultPrice: saturdayDefaultPrice !== null && saturdayDefaultPrice !== undefined && saturdayDefaultPrice !== ""
         ? Number(saturdayDefaultPrice)
+        : null,
+      saturdayDefaultRegularPrice: saturdayDefaultRegularPrice !== null && saturdayDefaultRegularPrice !== undefined && saturdayDefaultRegularPrice !== ""
+        ? Number(saturdayDefaultRegularPrice)
         : null,
       saturdayTimeSlots: Array.isArray(saturdayTimeSlots) ? saturdayTimeSlots : [],
     };
