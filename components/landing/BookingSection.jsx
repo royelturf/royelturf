@@ -721,7 +721,7 @@ export default function BookingSection() {
                     </div>
                     <div className="s-sum-row">
                       <span>ভেন্যু:</span>
-                      <span>রয়েল টার্ফ এন্ড সুইমিং জোন</span>
+                      <span>ভূশ্চি রয়েল টার্ফ এন্ড সুইমিং জোন</span>
                     </div>
                   </div>
 
