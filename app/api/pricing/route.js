@@ -26,10 +26,13 @@ export async function GET(request) {
         return NextResponse.json({
           arenaName,
           defaultPrice: 2000,
+          defaultRegularPrice: 2500,
           timeSlots: [],
           fridayDefaultPrice: null,
+          fridayDefaultRegularPrice: null,
           fridayTimeSlots: [],
           saturdayDefaultPrice: null,
+          saturdayDefaultRegularPrice: null,
           saturdayTimeSlots: [],
         });
       }

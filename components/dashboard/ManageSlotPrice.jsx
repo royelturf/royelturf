@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import Loading from "../shared/Loading";
-import { TIME_SLOTS } from "@/lib/pricing";
+import { TIME_SLOTS, DEFAULT_SLOT_REGULAR_PRICES, formatPriceBn } from "@/lib/pricing";
 
 const ManageSlotPrice = () => {
     const [pricingData, setPricingData] = useState([]);
@@ -14,10 +14,13 @@ const ManageSlotPrice = () => {
     const [arenaPricing, setArenaPricing] = useState({
         arenaName: "Royel Turf & Swimming Zone",
         defaultPrice: 2000,
+        defaultRegularPrice: 2500,
         timeSlots: [],
         fridayDefaultPrice: null,
+        fridayDefaultRegularPrice: null,
         fridayTimeSlots: [],
         saturdayDefaultPrice: null,
+        saturdayDefaultRegularPrice: null,
         saturdayTimeSlots: []
     });
     const [saving, setSaving] = useState(false);
@@ -36,20 +39,26 @@ const ManageSlotPrice = () => {
                     setArenaPricing({
                         arenaName: current.arenaName || selectedArena,
                         defaultPrice: current.defaultPrice || 2000,
+                        defaultRegularPrice: current.defaultRegularPrice || 2500,
                         timeSlots: current.timeSlots || [],
                         fridayDefaultPrice: current.fridayDefaultPrice ?? null,
+                        fridayDefaultRegularPrice: current.fridayDefaultRegularPrice ?? null,
                         fridayTimeSlots: current.fridayTimeSlots || [],
                         saturdayDefaultPrice: current.saturdayDefaultPrice ?? null,
+                        saturdayDefaultRegularPrice: current.saturdayDefaultRegularPrice ?? null,
                         saturdayTimeSlots: current.saturdayTimeSlots || []
                     });
                 } else {
                     setArenaPricing({
                         arenaName: selectedArena,
                         defaultPrice: 2000,
+                        defaultRegularPrice: 2500,
                         timeSlots: [],
                         fridayDefaultPrice: null,
+                        fridayDefaultRegularPrice: null,
                         fridayTimeSlots: [],
                         saturdayDefaultPrice: null,
+                        saturdayDefaultRegularPrice: null,
                         saturdayTimeSlots: []
                     });
                 }
@@ -80,6 +89,20 @@ const ManageSlotPrice = () => {
         });
     };
 
+    // Handle Default Regular Price (strikethrough) for the active tab
+    const handleDayDefaultRegularPriceChange = (val) => {
+        const numVal = val === "" ? null : Number(val);
+        setArenaPricing(prev => {
+            if (activeDayTab === "friday") {
+                return { ...prev, fridayDefaultRegularPrice: numVal };
+            } else if (activeDayTab === "saturday") {
+                return { ...prev, saturdayDefaultRegularPrice: numVal };
+            } else {
+                return { ...prev, defaultRegularPrice: Number(val) || 2500 };
+            }
+        });
+    };
+
     // Handle Slot Price Change for the active tab
     const handleSlotPriceChange = (slot, price) => {
         const numPrice = price === "" ? "" : Number(price);
@@ -94,7 +117,11 @@ const ManageSlotPrice = () => {
 
             let newSlots;
             if (price === "") {
-                newSlots = currentSlots.filter(s => s.slot !== slot);
+                if (existing?.regularPrice) {
+                    newSlots = currentSlots.map(s => s.slot === slot ? { ...s, price: undefined } : s);
+                } else {
+                    newSlots = currentSlots.filter(s => s.slot !== slot);
+                }
             } else if (existing) {
                 newSlots = currentSlots.map(s => s.slot === slot ? { ...s, price: Number(price) } : s);
             } else {
@@ -105,15 +132,46 @@ const ManageSlotPrice = () => {
         });
     };
 
+    // Handle Slot Regular Price (Strikethrough) Change for the active tab
+    const handleSlotRegularPriceChange = (slot, regPrice) => {
+        const numRegPrice = regPrice === "" ? "" : Number(regPrice);
+
+        setArenaPricing(prev => {
+            let key = "timeSlots";
+            if (activeDayTab === "friday") key = "fridayTimeSlots";
+            if (activeDayTab === "saturday") key = "saturdayTimeSlots";
+
+            const currentSlots = prev[key] || [];
+            const existing = currentSlots.find(s => s.slot === slot);
+
+            let newSlots;
+            if (regPrice === "") {
+                if (existing?.price !== undefined) {
+                    newSlots = currentSlots.map(s => s.slot === slot ? { ...s, regularPrice: null } : s);
+                } else {
+                    newSlots = currentSlots.filter(s => s.slot !== slot);
+                }
+            } else if (existing) {
+                newSlots = currentSlots.map(s => s.slot === slot ? { ...s, regularPrice: Number(regPrice) } : s);
+            } else {
+                newSlots = [...currentSlots, { slot, regularPrice: Number(regPrice) }];
+            }
+
+            return { ...prev, [key]: newSlots };
+        });
+    };
+
     // Quick Action: Copy Regular overrides to Friday or Saturday
     const handleCopyFromRegular = () => {
         const regularOverrides = (arenaPricing.timeSlots || []).map(s => ({ ...s }));
         const regularDefault = arenaPricing.defaultPrice;
+        const regularDefReg = arenaPricing.defaultRegularPrice;
 
         if (activeDayTab === "friday") {
             setArenaPricing(prev => ({
                 ...prev,
                 fridayDefaultPrice: prev.fridayDefaultPrice || regularDefault,
+                fridayDefaultRegularPrice: prev.fridayDefaultRegularPrice || regularDefReg,
                 fridayTimeSlots: regularOverrides
             }));
             toast.success("Copied Regular Day prices to Friday!");
@@ -121,6 +179,7 @@ const ManageSlotPrice = () => {
             setArenaPricing(prev => ({
                 ...prev,
                 saturdayDefaultPrice: prev.saturdayDefaultPrice || regularDefault,
+                saturdayDefaultRegularPrice: prev.saturdayDefaultRegularPrice || regularDefReg,
                 saturdayTimeSlots: regularOverrides
             }));
             toast.success("Copied Regular Day prices to Saturday!");
@@ -145,28 +204,31 @@ const ManageSlotPrice = () => {
         try {
             // Clean up regular slots
             const cleanedTimeSlots = (arenaPricing.timeSlots || []).filter(s =>
-                s.price && s.price !== arenaPricing.defaultPrice && s.price > 0
+                ((s.price && s.price !== arenaPricing.defaultPrice && s.price > 0) || (s.regularPrice && s.regularPrice > 0))
             );
 
             // Clean up Friday slots
             const effFridayDefault = arenaPricing.fridayDefaultPrice || arenaPricing.defaultPrice;
             const cleanedFridaySlots = (arenaPricing.fridayTimeSlots || []).filter(s =>
-                s.price && s.price !== effFridayDefault && s.price > 0
+                ((s.price && s.price !== effFridayDefault && s.price > 0) || (s.regularPrice && s.regularPrice > 0))
             );
 
             // Clean up Saturday slots
             const effSaturdayDefault = arenaPricing.saturdayDefaultPrice || arenaPricing.defaultPrice;
             const cleanedSaturdaySlots = (arenaPricing.saturdayTimeSlots || []).filter(s =>
-                s.price && s.price !== effSaturdayDefault && s.price > 0
+                ((s.price && s.price !== effSaturdayDefault && s.price > 0) || (s.regularPrice && s.regularPrice > 0))
             );
 
             const payload = {
                 arenaName: selectedArena,
                 defaultPrice: Number(arenaPricing.defaultPrice) || 2000,
+                defaultRegularPrice: Number(arenaPricing.defaultRegularPrice) || 2500,
                 timeSlots: cleanedTimeSlots,
                 fridayDefaultPrice: arenaPricing.fridayDefaultPrice ? Number(arenaPricing.fridayDefaultPrice) : null,
+                fridayDefaultRegularPrice: arenaPricing.fridayDefaultRegularPrice ? Number(arenaPricing.fridayDefaultRegularPrice) : null,
                 fridayTimeSlots: cleanedFridaySlots,
                 saturdayDefaultPrice: arenaPricing.saturdayDefaultPrice ? Number(arenaPricing.saturdayDefaultPrice) : null,
+                saturdayDefaultRegularPrice: arenaPricing.saturdayDefaultRegularPrice ? Number(arenaPricing.saturdayDefaultRegularPrice) : null,
                 saturdayTimeSlots: cleanedSaturdaySlots
             };
 
@@ -195,24 +257,36 @@ const ManageSlotPrice = () => {
     // Get current tab's active data
     let currentDefaultValue = "";
     let currentDefaultPlaceholder = arenaPricing.defaultPrice;
+    let currentRegularDefaultValue = "";
+    let currentRegularDefaultPlaceholder = arenaPricing.defaultRegularPrice || 2500;
     let currentSlots = [];
-    let currentEffectiveDefault = arenaPricing.defaultPrice;
+    let currentEffectiveDefault = arenaPricing.defaultPrice || 2000;
+    let currentEffectiveRegularDefault = arenaPricing.defaultRegularPrice || 2500;
 
     if (activeDayTab === "regular") {
         currentDefaultValue = arenaPricing.defaultPrice ?? "";
         currentDefaultPlaceholder = 2000;
+        currentRegularDefaultValue = arenaPricing.defaultRegularPrice ?? "";
+        currentRegularDefaultPlaceholder = 2500;
         currentSlots = arenaPricing.timeSlots || [];
         currentEffectiveDefault = arenaPricing.defaultPrice || 2000;
+        currentEffectiveRegularDefault = arenaPricing.defaultRegularPrice || 2500;
     } else if (activeDayTab === "friday") {
         currentDefaultValue = arenaPricing.fridayDefaultPrice ?? "";
         currentDefaultPlaceholder = `Same as Regular (৳${arenaPricing.defaultPrice})`;
+        currentRegularDefaultValue = arenaPricing.fridayDefaultRegularPrice ?? "";
+        currentRegularDefaultPlaceholder = `Same as Regular (৳${arenaPricing.defaultRegularPrice || 2500})`;
         currentSlots = arenaPricing.fridayTimeSlots || [];
         currentEffectiveDefault = arenaPricing.fridayDefaultPrice || arenaPricing.defaultPrice || 2000;
+        currentEffectiveRegularDefault = arenaPricing.fridayDefaultRegularPrice || arenaPricing.defaultRegularPrice || 2500;
     } else if (activeDayTab === "saturday") {
         currentDefaultValue = arenaPricing.saturdayDefaultPrice ?? "";
         currentDefaultPlaceholder = `Same as Regular (৳${arenaPricing.defaultPrice})`;
+        currentRegularDefaultValue = arenaPricing.saturdayDefaultRegularPrice ?? "";
+        currentRegularDefaultPlaceholder = `Same as Regular (৳${arenaPricing.defaultRegularPrice || 2500})`;
         currentSlots = arenaPricing.saturdayTimeSlots || [];
         currentEffectiveDefault = arenaPricing.saturdayDefaultPrice || arenaPricing.defaultPrice || 2000;
+        currentEffectiveRegularDefault = arenaPricing.saturdayDefaultRegularPrice || arenaPricing.defaultRegularPrice || 2500;
     }
 
     return (
@@ -289,25 +363,44 @@ const ManageSlotPrice = () => {
                         </div>
                     </div>
 
-                    <div className="form-group mt-3">
-                        <label>
-                            {activeDayTab === "regular" && "Default Slot Price (৳):"}
-                            {activeDayTab === "friday" && "Friday Default Slot Price (৳):"}
-                            {activeDayTab === "saturday" && "Saturday Default Slot Price (৳):"}
-                        </label>
-                        <input
-                            type="number"
-                            className="form-input"
-                            style={{ maxWidth: "320px" }}
-                            value={currentDefaultValue}
-                            placeholder={String(currentDefaultPlaceholder)}
-                            onChange={(e) => handleDayDefaultPriceChange(e.target.value)}
-                        />
-                        <small className="form-hint">
-                            {activeDayTab === "regular"
-                                ? "Base price for slots without a specific override on regular weekdays (Sunday - Thursday)."
-                                : "Default price applied for Friday/Saturday slots without individual overrides (leave blank to use regular default)."}
-                        </small>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }} className="mt-3">
+                        <div className="form-group">
+                            <label>
+                                {activeDayTab === "regular" && "Default Active / Offer Price (৳):"}
+                                {activeDayTab === "friday" && "Friday Default Offer Price (৳):"}
+                                {activeDayTab === "saturday" && "Saturday Default Offer Price (৳):"}
+                            </label>
+                            <input
+                                type="number"
+                                className="form-input"
+                                value={currentDefaultValue}
+                                placeholder={String(currentDefaultPlaceholder)}
+                                onChange={(e) => handleDayDefaultPriceChange(e.target.value)}
+                            />
+                            <small className="form-hint">
+                                {activeDayTab === "regular"
+                                    ? "Base offer price (the active price users pay)."
+                                    : "Default offer price for this day (leave blank to use regular)."}
+                            </small>
+                        </div>
+
+                        <div className="form-group">
+                            <label>
+                                {activeDayTab === "regular" && "Default Regular / Strikethrough Price (৳):"}
+                                {activeDayTab === "friday" && "Friday Default Regular Price (৳):"}
+                                {activeDayTab === "saturday" && "Saturday Default Regular Price (৳):"}
+                            </label>
+                            <input
+                                type="number"
+                                className="form-input"
+                                value={currentRegularDefaultValue}
+                                placeholder={String(currentRegularDefaultPlaceholder)}
+                                onChange={(e) => handleDayDefaultRegularPriceChange(e.target.value)}
+                            />
+                            <small className="form-hint">
+                                Original rate shown crossed-out above the offer price (e.g. ৳2,500).
+                            </small>
+                        </div>
                     </div>
 
                     <div className="slots-grid">
@@ -327,8 +420,9 @@ const ManageSlotPrice = () => {
                                 <thead>
                                     <tr>
                                         <th>Time Slot</th>
-                                        <th>Price (৳)</th>
-                                        <th>Effective Price</th>
+                                        <th>Regular Price (৳) [Crossed-out]</th>
+                                        <th>Offer Price (৳) [Active]</th>
+                                        <th>Card Preview</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -337,7 +431,10 @@ const ManageSlotPrice = () => {
                                     {TIME_SLOTS.map(slot => {
                                         const override = currentSlots.find(s => s.slot === slot);
                                         const hasCustomPrice = override && override.price !== "" && override.price !== null && override.price !== undefined;
-                                        const isOverride = hasCustomPrice && override.price !== currentEffectiveDefault;
+                                        const hasCustomRegPrice = override && override.regularPrice !== "" && override.regularPrice !== null && override.regularPrice !== undefined;
+
+                                        const shiftRegDefault = DEFAULT_SLOT_REGULAR_PRICES[slot] || currentEffectiveRegularDefault;
+                                        const effectiveRegPrice = hasCustomRegPrice ? override.regularPrice : shiftRegDefault;
                                         const effectivePrice = hasCustomPrice ? override.price : currentEffectiveDefault;
 
                                         return (
@@ -346,35 +443,52 @@ const ManageSlotPrice = () => {
                                                 <td>
                                                     <input
                                                         type="number"
+                                                        placeholder={String(shiftRegDefault)}
+                                                        value={hasCustomRegPrice ? override.regularPrice : ""}
+                                                        onChange={(e) => handleSlotRegularPriceChange(slot, e.target.value)}
+                                                        className="slot-price-input"
+                                                        style={{ maxWidth: "115px" }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
                                                         placeholder={String(currentEffectiveDefault)}
                                                         value={hasCustomPrice ? override.price : ""}
                                                         onChange={(e) => handleSlotPriceChange(slot, e.target.value)}
                                                         className="slot-price-input"
+                                                        style={{ maxWidth: "115px" }}
                                                     />
                                                 </td>
-                                                <td style={{ fontWeight: 600, color: "#247009" }}>
-                                                    ৳{Number(effectivePrice).toLocaleString()}
+                                                <td style={{ textAlign: "right", paddingRight: "16px" }}>
+                                                    <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "flex-end", lineHeight: 1.2 }}>
+                                                        {effectiveRegPrice > effectivePrice && (
+                                                            <span style={{ fontSize: "11.5px", color: "#94a3b8", textDecoration: "line-through" }}>
+                                                                ৳{Number(effectiveRegPrice).toLocaleString()}
+                                                            </span>
+                                                        )}
+                                                        <span style={{ fontSize: "15px", fontWeight: 700, color: "#0096c7" }}>
+                                                            ৳{Number(effectivePrice).toLocaleString()}
+                                                        </span>
+                                                    </div>
                                                 </td>
                                                 <td>
-                                                    {isOverride ? (
-                                                        <span className="status-badge override">Custom ৳{override.price}</span>
-                                                    ) : hasCustomPrice ? (
-                                                        <span className="status-badge override">Custom ৳{override.price}</span>
+                                                    {hasCustomPrice || hasCustomRegPrice ? (
+                                                        <span className="status-badge override">Custom</span>
                                                     ) : (
                                                         <span className={`status-badge ${activeDayTab === 'friday' ? 'friday' : activeDayTab === 'saturday' ? 'saturday' : 'default'}`}>
-                                                            {activeDayTab === "regular"
-                                                                ? "Default"
-                                                                : arenaPricing[`${activeDayTab}DefaultPrice`]
-                                                                    ? `${activeDayTab.toUpperCase()} Default`
-                                                                    : "Regular Default"}
+                                                            Default
                                                         </span>
                                                     )}
                                                 </td>
                                                 <td>
-                                                    {hasCustomPrice && (
+                                                    {(hasCustomPrice || hasCustomRegPrice) && (
                                                         <button
                                                             type="button"
-                                                            onClick={() => handleSlotPriceChange(slot, "")}
+                                                            onClick={() => {
+                                                                handleSlotPriceChange(slot, "");
+                                                                handleSlotRegularPriceChange(slot, "");
+                                                            }}
                                                             style={{
                                                                 background: "none",
                                                                 border: "none",

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
-import { calculateSlotPrice } from "@/lib/pricing";
+import { calculateSlotPrice, calculateSlotRegularPrice, formatPriceBn } from "@/lib/pricing";
 import TutorialVideoModal from "./TutorialVideoModal";
 
 export const toBengaliDigits = (num) => {
@@ -198,6 +198,9 @@ export default function BookingSection() {
   const getSlotPrice = (slotName) => {
     return calculateSlotPrice(arenaPricing, selectedDate, slotName);
   };
+  const getSlotRegularPrice = (slotName) => {
+    return calculateSlotRegularPrice(arenaPricing, selectedDate, slotName);
+  };
 
   const availableSlotsCount = slots.filter((s) => s.status === "available").length;
 
@@ -337,6 +340,7 @@ export default function BookingSection() {
     }
 
     const rawPrice = getSlotPrice(selectedSlot.slot);
+    const regPrice = getSlotRegularPrice(selectedSlot.slot);
     const discountAmount = couponData?.discountAmount || 0;
     const finalPrice = Math.max(0, rawPrice - discountAmount);
     const advanceAmount = Math.min(500, finalPrice > 0 ? 500 : 0);
@@ -348,8 +352,8 @@ export default function BookingSection() {
       : "ক্যাশ বুকিং নিশ্চিতকরণ";
 
     const confirmText = isAdvance
-      ? `বিকাশের মাধ্যমে ৳${toBengaliDigits(advanceAmount)} অগ্রিম প্রদান করে স্লটটি নিশ্চিত করতে চান?`
-      : `আপনি কি ভেন্যুতে ৳${toBengaliDigits(finalPrice)} পরিশোধের শর্তে স্লটটি বুক করতে চান?`;
+      ? `বিকাশের মাধ্যমে ৳${formatPriceBn(advanceAmount)} অগ্রিম প্রদান করে স্লটটি নিশ্চিত করতে চান?`
+      : `আপনি কি ভেন্যুতে ৳${formatPriceBn(finalPrice)} পরিশোধের শর্তে স্লটটি বুক করতে চান?`;
 
     const result = await Swal.fire({
       title: confirmTitle,
@@ -360,18 +364,25 @@ export default function BookingSection() {
           <p><strong>নাম:</strong> ${bookingName}</p>
           <p><strong>মোবাইল:</strong> ${bookingPhone}</p>
           ${
+            regPrice > rawPrice
+              ? `<p><strong>রেগুলার রেট:</strong> <span style="text-decoration: line-through; color: #94a3b8;">৳${formatPriceBn(regPrice)}</span></p>`
+              : ""
+          }
+          ${
             couponData && discountAmount > 0
-              ? `<p style="color: #10b981;"><strong>কুপন ডিসকাউন্ট (${couponData.code}):</strong> -৳${toBengaliDigits(discountAmount)}</p>`
+              ? `<p style="color: #10b981;"><strong>কুপন ডিসকাউন্ট (${couponData.code}):</strong> -৳${formatPriceBn(discountAmount)}</p>`
               : ""
           }
           <p><strong>মোট ভাড়া:</strong> ${
             couponData && discountAmount > 0
-              ? `<span style="text-decoration: line-through; color: #94a3b8;">৳${toBengaliDigits(rawPrice)}</span> `
+              ? `<span style="text-decoration: line-through; color: #94a3b8;">৳${formatPriceBn(rawPrice)}</span> `
+              : regPrice > rawPrice
+              ? `<span style="text-decoration: line-through; color: #94a3b8;">৳${formatPriceBn(regPrice)}</span> `
               : ""
-          }৳${toBengaliDigits(finalPrice)}</p>
+          }৳${formatPriceBn(finalPrice)}</p>
           <p style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e2e8f0; font-size: 16px;">
             <strong>${isAdvance ? "অগ্রিম প্রদেয় (বিকাশ):" : "ভেন্যুতে প্রদেয়:"}</strong>
-            <span style="color: #0096c7; font-weight: bold;">৳${toBengaliDigits(isAdvance ? advanceAmount : finalPrice)}</span>
+            <span style="color: #0096c7; font-weight: bold;">৳${formatPriceBn(isAdvance ? advanceAmount : finalPrice)}</span>
           </p>
         </div>
       `,
@@ -465,6 +476,7 @@ export default function BookingSection() {
 
   const selectedDateObj = datesList.find((d) => d.dateStr === selectedDate);
   const rawPrice = selectedSlot ? getSlotPrice(selectedSlot.slot) : 0;
+  const regularPrice = selectedSlot ? getSlotRegularPrice(selectedSlot.slot) : 0;
   const discountAmount = couponData?.discountAmount || 0;
   const finalPrice = Math.max(0, rawPrice - discountAmount);
   const advanceAmount = Math.min(500, finalPrice > 0 ? 500 : 0);
@@ -604,6 +616,7 @@ export default function BookingSection() {
           <div className="s-slots-grid">
             {slots.map((item) => {
               const price = getSlotPrice(item.slot);
+              const regularPrice = getSlotRegularPrice(item.slot);
               const isSelected = selectedSlot?.slot === item.slot;
               const formattedTime = formatSlotTimeBn(item.slot);
 
@@ -638,7 +651,14 @@ export default function BookingSection() {
                     </span>
 
                     <span className="s-seg-prices">
-                      <span className="s-seg-p">৳{toBengaliDigits(price)}</span>
+                      {regularPrice && regularPrice > price && (
+                        <span className="s-seg-p-orig">
+                          ৳{formatPriceBn(regularPrice)}
+                        </span>
+                      )}
+                      <span className="s-seg-p">
+                        ৳{formatPriceBn(price)}
+                      </span>
                     </span>
                   </span>
                 </button>
@@ -738,12 +758,26 @@ export default function BookingSection() {
                               fontWeight: 500,
                             }}
                           >
-                            ৳{toBengaliDigits(rawPrice)}
+                            ৳{formatPriceBn(rawPrice)}
                           </span>
-                          <b>৳{toBengaliDigits(finalPrice)}</b>
+                          <b>৳{formatPriceBn(finalPrice)}</b>
+                        </div>
+                      ) : regularPrice > rawPrice ? (
+                        <div style={{ display: "flex", alignItems: "baseline", gap: "8px", justifyContent: "flex-end" }}>
+                          <span
+                            style={{
+                              textDecoration: "line-through",
+                              color: "var(--muted)",
+                              fontSize: "15px",
+                              fontWeight: 500,
+                            }}
+                          >
+                            ৳{formatPriceBn(regularPrice)}
+                          </span>
+                          <b>৳{formatPriceBn(rawPrice)}</b>
                         </div>
                       ) : (
-                        <b>৳{toBengaliDigits(rawPrice)}</b>
+                        <b>৳{formatPriceBn(rawPrice)}</b>
                       )}
                     </div>
                   </div>
