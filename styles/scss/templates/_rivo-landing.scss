@@ -785,9 +785,10 @@
   align-items: center;
   gap: 8px;
   margin: 0;
-  font-size: 15px;
+  font-size: 22px;
   font-weight: 600;
   display: flex;
+  padding-bottom: 10px;
 }
 
 .s-hero-h {
@@ -812,6 +813,7 @@
   margin: 0;
   font-size: max(16px, min(1.3vw, 18px));
   line-height: 1.6;
+  padding-top: 20px;
 }
 
 .s-hero-ctas {
