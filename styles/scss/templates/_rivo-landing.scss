@@ -177,8 +177,14 @@
   }
 }
 
+.s-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .s-brand {
-  white-space: wrap;
+  white-space: nowrap;
   align-items: center;
   gap: 12px;
   min-height: 44px;
@@ -200,9 +206,50 @@
   }
 }
 
-@media all and (max-width: 640px) {
-  .s-brand span {
-    display: none;
+// Mobile How to book button right next to logo
+.s-mobile-nav-video-btn {
+  display: none;
+  align-items: center;
+  gap: 7px;
+  background: rgba(0, 150, 199, 0.12);
+  border: 1px solid rgba(0, 150, 199, 0.35);
+  color: #38bdf8;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  font-family: inherit;
+
+  .s-video-icon-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    box-shadow: 0 0 8px rgba(0, 150, 199, 0.5);
+    flex-shrink: 0;
+
+    svg {
+      margin-left: 1px;
+    }
+  }
+
+  &:hover,
+  &:active {
+    background: rgba(0, 150, 199, 0.22);
+    border-color: var(--accent);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 150, 199, 0.25);
+
+    .s-video-icon-circle {
+      transform: scale(1.08);
+    }
   }
 }
 
@@ -487,23 +534,172 @@
   display: flex;
 }
 
+.s-desktop-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.s-mobile-quick-actions {
+  display: none;
+}
+
+.s-mobile-icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+
+  &.s-fb-icon-btn {
+    background: rgba(24, 119, 242, 0.12);
+    border: 1px solid rgba(24, 119, 242, 0.35);
+    color: #1877f2;
+
+    &:hover,
+    &:active {
+      background: rgba(24, 119, 242, 0.24);
+      border-color: #1877f2;
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(24, 119, 242, 0.35);
+    }
+  }
+
+  &.s-map-icon-btn {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #f87171;
+
+    &:hover,
+    &:active {
+      background: rgba(239, 68, 68, 0.24);
+      border-color: #f87171;
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+    }
+  }
+}
+
 .s-mobile-toggle {
   display: none;
-  background: transparent;
-  border: none;
+  background: rgba(14, 25, 48, 0.75);
+  border: 1px solid var(--line);
+  border-radius: 10px;
   color: var(--text);
   cursor: pointer;
-  padding: 8px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+
+  &:hover,
+  &:active {
+    background: var(--surface-2);
+    border-color: var(--accent);
+    color: #ffffff;
+    transform: translateY(-1px);
+  }
 }
 
 @media (max-width: 880px) {
+  .s-brand .s-brand-title {
+    display: none;
+  }
+
+  .s-mobile-nav-video-btn {
+    display: inline-flex;
+  }
+
   .s-links {
     display: none;
   }
 
+  .s-actions {
+    gap: 8px;
+  }
+
+  .s-desktop-actions {
+    display: none !important;
+  }
+
+  .s-mobile-quick-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   .s-mobile-toggle {
-    display: block;
-    margin-left: auto;
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 420px) {
+  .s-nav-in {
+    gap: 8px;
+  }
+
+  .s-nav-left {
+    gap: 8px;
+  }
+
+  .s-brand .s-logo-img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .s-mobile-nav-video-btn {
+    padding: 5px 9px;
+    font-size: 12px;
+    gap: 5px;
+
+    .s-video-icon-circle {
+      width: 18px;
+      height: 18px;
+
+      svg {
+        width: 8px;
+        height: 8px;
+      }
+    }
+  }
+
+  .s-actions {
+    gap: 6px;
+  }
+
+  .s-mobile-quick-actions {
+    gap: 6px;
+  }
+
+  .s-mobile-icon-btn {
+    width: 33px;
+    height: 33px;
+    border-radius: 8px;
+
+    svg {
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  .s-mobile-toggle {
+    width: 33px;
+    height: 33px;
+    border-radius: 8px;
+
+    svg {
+      width: 19px;
+      height: 19px;
+    }
   }
 }
 
