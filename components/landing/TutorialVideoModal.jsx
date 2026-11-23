@@ -102,7 +102,7 @@ export default function TutorialVideoModal({ isOpen, onClose }) {
               <div className="s-v-step-num">৩</div>
               <div className="s-v-step-text">
                 <strong>বিকাশ অগ্রিম পেমেন্ট</strong>
-                বিকাশে মাত্র ৳১ অগ্রিম প্রদান করলেই স্লট নিশ্চিত হয়ে যাবে।
+                বিকাশে মাত্র ৳৫০০ অগ্রিম প্রদান করলেই স্লট নিশ্চিত হয়ে যাবে।
               </div>
             </div>
           </div>

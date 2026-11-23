@@ -343,7 +343,7 @@ export default function BookingSection() {
     const regPrice = getSlotRegularPrice(selectedSlot.slot);
     const discountAmount = couponData?.discountAmount || 0;
     const finalPrice = Math.max(0, rawPrice - discountAmount);
-    const advanceAmount = Math.min(1, finalPrice > 0 ? 1 : 0);
+    const advanceAmount = Math.min(500, finalPrice > 0 ? 500 : 0);
     const activePaymentType = canUseCOD ? paymentType : "advance";
     const isAdvance = activePaymentType === "advance";
 
@@ -479,7 +479,7 @@ export default function BookingSection() {
   const regularPrice = selectedSlot ? getSlotRegularPrice(selectedSlot.slot) : 0;
   const discountAmount = couponData?.discountAmount || 0;
   const finalPrice = Math.max(0, rawPrice - discountAmount);
-  const advanceAmount = Math.min(1, finalPrice > 0 ? 1 : 0);
+  const advanceAmount = Math.min(500, finalPrice > 0 ? 500 : 0);
 
   return (
     <section className="s-book s-wrap" id="booking" aria-labelledby="book-h">
@@ -803,7 +803,7 @@ export default function BookingSection() {
                   )}
 
                   <div style={{ marginTop: "18px", fontSize: "13px", color: "var(--muted)" }}>
-                    💡 অগ্রিম পেমেন্টে মাত্র ৳১ প্রদান করে স্লট কনফার্ম করতে পারবেন।
+                    💡 অগ্রিম পেমেন্টে মাত্র ৳৫০০ প্রদান করে স্লট কনফার্ম করতে পারবেন।
                   </div>
                 </div>
 
@@ -850,7 +850,7 @@ export default function BookingSection() {
                             checked={paymentType === "advance"}
                             onChange={(e) => setPaymentType(e.target.value)}
                           />
-                          <span>বিকাশ অগ্রিম (৳১)</span>
+                          <span>বিকাশ অগ্রিম (৳৫০০)</span>
                         </label>
 
                         <label className={paymentType === "cod" ? "is-selected" : ""}>
@@ -872,8 +872,8 @@ export default function BookingSection() {
                         <div className="s-payment-single-in">
                           <span className="s-pay-dot"></span>
                           <div className="s-pay-text">
-                            <strong>বিকাশ অনলাইন পেমেন্ট (অগ্রিম ৳১)</strong>
-                            <small>বিকাশের মাধ্যমে মাত্র ৳১ অগ্রিম প্রদান করে স্লট নিশ্চিত করুন</small>
+                            <strong>বিকাশ অনলাইন পেমেন্ট (অগ্রিম ৳৫০০)</strong>
+                            <small>বিকাশের মাধ্যমে মাত্র ৳৫০০ অগ্রিম প্রদান করে স্লট নিশ্চিত করুন</small>
                           </div>
                         </div>
                       </div>

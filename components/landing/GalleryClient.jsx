@@ -250,7 +250,7 @@ export default function GalleryClient() {
               </div>
               <h2>ছবি দেখে খেলতে ইচ্ছে করছে?</h2>
               <p>
-                পছন্দের সময়ে আপনার টিম নিয়ে আসুন! অনলাইনে স্লট দেখে মাত্র ১ টাকা দিয়ে সহজে বুকিং নিশ্চিত করুন।
+                পছন্দের সময়ে আপনার টিম নিয়ে আসুন! অনলাইনে স্লট দেখে মাত্র ৫০০ টাকা দিয়ে সহজে বুকিং নিশ্চিত করুন।
               </p>
               <div className="s-gal-cta-actions">
                 <Link href="/#booking" className="s-btn s-btn-primary">
