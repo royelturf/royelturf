@@ -139,7 +139,7 @@ export async function POST(request) {
     }
 
     const isCustomerRole = !session || ["REGULAR_CUSTOMER", "SPECIAL_CUSTOMER", "USER", "GUEST"].includes(role);
-    const MIN_ADVANCE = isCustomerRole ? 500 : 0;
+    const MIN_ADVANCE = isCustomerRole ? 1 : 0;
 
     if (paymentType === "advance") {
       if (totalAmount < MIN_ADVANCE) {
