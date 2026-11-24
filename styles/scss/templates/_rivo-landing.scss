@@ -2989,6 +2989,118 @@ body,
   }
 }
 
+// Video Highlights Section & Cards
+.s-gal-section-title-wrap {
+  margin-bottom: 24px;
+
+  .s-gal-section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 4px 0 8px;
+    letter-spacing: -0.01em;
+
+    @media (max-width: 640px) {
+      font-size: 20px;
+    }
+  }
+
+  .s-gal-section-desc {
+    font-size: 14.5px;
+    color: var(--muted);
+    margin: 0;
+    max-width: 680px;
+  }
+}
+
+.s-gal-videos-section {
+  margin-top: 36px;
+  margin-bottom: 48px;
+}
+
+.s-gal-videos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+.s-gal-video-card {
+  position: relative;
+  background: radial-gradient(circle at top left, rgba(0, 150, 199, 0.12) 0%, transparent 70%),
+    linear-gradient(180deg, rgba(14, 27, 59, 0.85) 0%, rgba(8, 16, 36, 0.95) 100%);
+  border: 1px solid rgba(0, 150, 199, 0.35);
+  border-radius: var(--r);
+  overflow: hidden;
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.45);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &:hover {
+    border-color: rgba(0, 150, 199, 0.7);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.55), 0 0 24px -2px rgba(0, 150, 199, 0.3);
+  }
+
+  .s-gal-video-player-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000000;
+    overflow: hidden;
+
+    .s-gal-video-player {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  .s-gal-video-info {
+    padding: 20px 22px;
+
+    @media (max-width: 640px) {
+      padding: 16px;
+    }
+
+    .s-gal-video-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #38bdf8;
+      background: rgba(0, 150, 199, 0.15);
+      border: 1px solid rgba(0, 150, 199, 0.3);
+      padding: 3px 10px;
+      border-radius: 9999px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .s-gal-video-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0 0 6px;
+      line-height: 1.35;
+    }
+
+    .s-gal-video-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+}
+
 // Grid for Dedicated Gallery Page
 .s-gal-grid-section {
   margin-top: 20px;

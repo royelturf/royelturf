@@ -3,57 +3,74 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Maximize2, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ArrowRight, Maximize2, ChevronLeft, ChevronRight, X, Play, Film, Camera } from "lucide-react";
 
-import galleryOne from "@/public/images/1.jpg";
-import timeupTurf from "@/public/images/timeupturf.webp";
-import galleryFour from "@/public/images/4.jpg";
-import galleryThree from "@/public/images/3.jpg";
-import galleryFive from "@/public/images/5.jpg";
-import gallerySix from "@/public/images/6.jpeg";
+import img1 from "@/public/images/gallry/image-1.jpeg";
+import img2 from "@/public/images/gallry/image-2.jpeg";
+import img3 from "@/public/images/gallry/image-3.jpeg";
+import img4 from "@/public/images/gallry/image-4.jpeg";
+import img7 from "@/public/images/gallry/image-7.jpeg";
+import img11 from "@/public/images/gallry/image-11.jpeg";
+
+const HOME_GALLERY_VIDEOS = [
+  {
+    id: "v1",
+    src: "/images/gallry/video-1.mp4",
+    title: "ভূশ্চি রয়েল টার্ফ ও অ্যারেনা ভিডিও ট্যুর",
+    badge: "ভিডিও ১ · টার্ফ ট্যুর",
+    desc: "আন্তর্জাতিক মানের কৃত্রিম ঘাসের খেলার মাঠ ও ভেন্যুর মনোরম পরিবেশের বাস্তব ভিডিও চিত্র।",
+  },
+  {
+    id: "v2",
+    src: "/images/gallry/video-2.mp4",
+    title: "নাইট ফুটবল ম্যাচ ও অ্যারেনা হাইলাইটস",
+    badge: "ভিডিও ২ · নাইট ম্যাচ",
+    desc: "উজ্জ্বল ফ্লাডলাইটের আলোয় রোমাঞ্চকর রাতের ম্যাচ ও খেলোয়াড়দের জমজমাট ফুটবল মুহূর্ত।",
+  },
+];
 
 const HOME_GALLERY_ITEMS = [
   {
     id: 1,
-    src: galleryOne,
-    title: "প্রিমিয়াম কৃত্রিম টার্ফ ও বল",
+    src: img1,
+    title: "প্রিমিয়াম কৃত্রিম টার্ফ ও গ্রিন পিচ",
     category: "টার্ফ গ্রাউন্ড",
     badge: "আন্তর্জাতিক মান",
   },
   {
     id: 2,
-    src: timeupTurf,
+    src: img4,
     title: "উজ্জ্বল ফ্লাডলাইটে নাইট ফুটবল",
     category: "নাইট ম্যাচ",
-    badge: "২৪/৭ খোলা",
+    badge: "২৪/৭ ম্যাচ",
   },
   {
     id: 3,
-    src: galleryFour,
-    title: "গ্রিন পিচ ও শক্তিশালী গোলপোস্ট",
+    src: img3,
+    title: "ওয়াইড ফুল পিচ ও গোলপোস্ট ভিউ",
+    category: "টার্ফ গ্রাউন্ড",
+    badge: "ফুল অ্যারেনা",
+  },
+  {
+    id: 4,
+    src: img2,
+    title: "অ্যারেনা বাউন্ডারি ও প্লেয়ার্স জোন",
     category: "টার্ফ গ্রাউন্ড",
     badge: "সুরক্ষিত নেট",
   },
   {
-    id: 4,
-    src: galleryThree,
-    title: "ওয়াইড অ্যারেনা ও খোলামেলা পরিবেশ",
-    category: "টার্ফ গ্রাউন্ড",
-    badge: "প্রাকৃতিক আলো",
-  },
-  {
     id: 5,
-    src: galleryFive,
-    title: "সেন্টার সার্কেল ও ম্যাচ ভিউ",
-    category: "টার্ফ গ্রাউন্ড",
-    badge: "প্রিমিয়াম সারফেস",
+    src: img7,
+    title: "রয়েল সুইমিং জোন ও রিল্যাক্স এরিয়া",
+    category: "সুইমিং জোন",
+    badge: "সুইমিং পুল",
   },
   {
     id: 6,
-    src: gallerySix,
-    title: "গ্র্যান্ড ওপেনিং ও টার্ফ আয়োজন",
-    category: "ইভেন্ট",
-    badge: "অফিশিয়াল",
+    src: img11,
+    title: "রাতের টার্ফ ও ঝলমলে ম্যাচ",
+    category: "নাইট ম্যাচ",
+    badge: "আলোকিত মাঠ",
   },
 ];
 
@@ -101,21 +118,61 @@ export default function GallerySection() {
       <div className="s-gallery-header">
         <div className="s-gallery-header-info">
           <div className="s-gallery-tag">
-            <span>ফটো গ্যালারি</span>
+            <span>ফটো ও ভিডিও গ্যালারি</span>
           </div>
           <h2 className="s-h2" id="gal-h">
             এক নজরে রয়েল টার্ফ
           </h2>
           <p className="s-lede">
-            দিন কিংবা রাতে সেরা ফুটবল ও সুইমিং অভিজ্ঞতার বাস্তব খণ্ডচিত্র। কুমিল্লার লালমাইয়ে আন্তর্জাতিক মানের কৃত্রিম টার্ফে খেলুন বন্ধুদের সাথে।
+            দিন কিংবা রাতে সেরা ফুটবল ও সুইমিং অভিজ্ঞতার বাস্তব খণ্ডচিত্র ও ভিডিও। কুমিল্লার লালমাইয়ে আন্তর্জাতিক মানের কৃত্রিম টার্ফে খেলুন বন্ধুদের সাথে।
           </p>
         </div>
 
         <div className="s-gallery-header-cta">
           <Link href="/gallery" className="s-btn s-btn-ghost s-gal-all-btn">
-            <span>সম্পূর্ণ গ্যালারি দেখুন</span>
+            <span>সম্পূর্ণ গ্যালারি দেখুন (১৫টি ছবি ও ২টি ভিডিও)</span>
             <ArrowRight size={16} />
           </Link>
+        </div>
+      </div>
+
+      {/* Top 2 Featured Videos */}
+      <div className="s-gal-section-title-wrap" style={{ marginTop: "12px", marginBottom: "20px" }}>
+        <div className="s-gallery-tag">
+          <Film size={14} className="s-sparkle-icon" />
+          <span>ভিডিও হাইলাইটস</span>
+        </div>
+      </div>
+
+      <div className="s-gal-videos-grid" style={{ marginBottom: "40px" }}>
+        {HOME_GALLERY_VIDEOS.map((video) => (
+          <div key={video.id} className="s-gal-video-card">
+            <div className="s-gal-video-player-wrap">
+              <video
+                src={video.src}
+                controls
+                preload="metadata"
+                playsInline
+                className="s-gal-video-player"
+              />
+            </div>
+            <div className="s-gal-video-info">
+              <div className="s-gal-video-badge">
+                <Play size={12} fill="currentColor" />
+                <span>{video.badge}</span>
+              </div>
+              <h3 className="s-gal-video-title">{video.title}</h3>
+              <p className="s-gal-video-desc">{video.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Photo Header */}
+      <div className="s-gal-section-title-wrap" style={{ marginBottom: "20px" }}>
+        <div className="s-gallery-tag">
+          <Camera size={14} className="s-sparkle-icon" />
+          <span>ফটো গ্যালারি</span>
         </div>
       </div>
 
@@ -174,7 +231,7 @@ export default function GallerySection() {
             স্লট বুক করুন
           </Link>
           <Link href="/gallery" className="s-btn s-btn-ghost">
-            আরও ছবি দেখুন
+            আরও ছবি ও ভিডিও দেখুন
           </Link>
         </div>
       </div>
