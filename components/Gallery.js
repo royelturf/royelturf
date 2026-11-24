@@ -11,12 +11,12 @@ import 'swiper/css/pagination'
 
 import Link from 'next/link';
 import Image from 'next/image'
-import sliderOne from '@/public/images/1.jpg'
-import sliderTwo from '@/public/images/2.jpg'
-import sliderThree from '@/public/images/3.jpg'
-import sliderFour from '@/public/images/4.jpg'
-import sliderFive from '@/public/images/5.jpg'
-import sliderSix from '@/public/images/6.jpeg'
+import sliderOne from '@/public/images/gallry/image-1.jpeg'
+import sliderTwo from '@/public/images/gallry/image-2.jpeg'
+import sliderThree from '@/public/images/gallry/image-3.jpeg'
+import sliderFour from '@/public/images/gallry/image-4.jpeg'
+import sliderFive from '@/public/images/gallry/image-5.jpeg'
+import sliderSix from '@/public/images/gallry/image-6.jpeg'
 // import sliderSeven from '@/public/images/7.JPG'
 // import sliderEight from '@/public/images/8.jpg'
 
